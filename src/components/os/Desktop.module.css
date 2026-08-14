@@ -25,6 +25,15 @@
   align-content: flex-start;
 }
 
+@media (min-width: 768px) {
+  .appGrid {
+    grid-template-columns: repeat(1, 1fr);
+    width: 120px; /* Apps align on the left like a Mac */
+    gap: 24px;
+    padding: 30px;
+  }
+}
+
 .appWrapper {
   display: flex;
   flex-direction: column;
@@ -77,8 +86,21 @@
   backdrop-filter: blur(25px);
   -webkit-backdrop-filter: blur(25px);
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
   box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+@media (min-width: 768px) {
+  .dock {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    margin: 0 0 20px 0;
+    padding: 12px 24px;
+    gap: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
 }
 
 .dock .appLabel {

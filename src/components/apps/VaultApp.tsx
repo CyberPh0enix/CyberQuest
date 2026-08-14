@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { useOS } from "@/context/OSContext";
 import styles from "./VaultApp.module.css";
-import { ChevronLeft, FolderLock, ShieldCheck } from "lucide-react";
+import { FolderLock, ShieldCheck } from "lucide-react";
+import AppContainer from "../os/AppContainer";
 
 export default function VaultApp() {
   const { setActiveApp } = useOS();
@@ -24,16 +25,9 @@ export default function VaultApp() {
   };
 
   return (
-    <div className={styles.appWrapper}>
-      <div className={styles.header}>
-        <button className={styles.closeButton} onClick={() => setActiveApp(null)}>
-          <ChevronLeft size={28} />
-        </button>
-        <span>Secure Vault</span>
-        <div style={{ width: 44 }}></div>
-      </div>
-
-      <div className={styles.content}>
+    <AppContainer appId="vault" appName="Secure Vault">
+      <div className={styles.appWrapper}>
+        <div className={styles.content}>
         {!unlocked ? (
           <>
             <FolderLock size={64} className={styles.icon} />
@@ -76,5 +70,6 @@ export default function VaultApp() {
         )}
       </div>
     </div>
+    </AppContainer>
   );
 }

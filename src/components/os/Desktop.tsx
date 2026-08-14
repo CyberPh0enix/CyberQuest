@@ -3,7 +3,7 @@
 import styles from "./Desktop.module.css";
 import { useOS } from "@/context/OSContext";
 import { 
-  Camera, MessageSquare, Phone, Globe, 
+  Instagram, MessageSquare, Phone, Globe, 
   Music, Map, Settings, Calendar, 
   FolderLock
 } from "lucide-react";
@@ -11,7 +11,7 @@ import { HINTS_REGISTRY } from "@/data/puzzles";
 
 // We'll use lucide-react icons for fake apps
 const APPS = [
-  { id: "insta", name: "Instagram", Icon: Camera, customClass: styles.instaIcon },
+  { id: "insta", name: "Instagram", Icon: Instagram, customClass: styles.instaIcon },
   { id: "vault", name: "Secure Vault", Icon: FolderLock, customClass: styles.vaultIcon },
   { id: "settings", name: "Settings", Icon: Settings, customClass: "" },
   { id: "maps", name: "Maps", Icon: Map, customClass: "" },
