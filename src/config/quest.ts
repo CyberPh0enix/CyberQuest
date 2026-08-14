@@ -14,5 +14,7 @@ export const QUEST_CONFIG = {
   lore: {
     badgeLocation: "127.0.0.1",
     badgeRank: "OPERATIVE",
+    clearance: "OMEGA-TIER",
+    idPrefix: "CPX"
   }
 };

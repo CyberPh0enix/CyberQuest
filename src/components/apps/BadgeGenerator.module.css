@@ -1,0 +1,320 @@
+/* BadgeGenerator.module.css */
+
+/* Fonts will be imported globally via layout.tsx or next/font, but we can rely on standard fallback if not loaded.
+   However, we should still enforce the font families here.
+*/
+
+.generatorOverlay {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+  background-color: black;
+  color: white;
+  font-family: monospace;
+  position: relative;
+  overflow-y: auto;
+}
+
+.backgroundPulse {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(0, 122, 255, 0.1) 0, transparent 80%);
+  animation: pulseBg 4s infinite;
+}
+
+@keyframes pulseBg {
+  0%, 100% { opacity: 0.8; }
+  50% { opacity: 1; }
+}
+
+.contentWrapper {
+  z-index: 10;
+  width: 100%;
+  max-width: 500px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 24px;
+  animation: fadeIn 1s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.mainIcon {
+  filter: drop-shadow(0 0 10px #007aff);
+  margin-bottom: 16px;
+}
+
+.mainTitle {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 28px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  color: #fff;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+
+.subTitle {
+  font-family: 'JetBrains Mono', monospace;
+  color: #007aff;
+  letter-spacing: 1px;
+  margin-bottom: 32px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.formBox {
+  width: 100%;
+  background: rgba(10, 10, 10, 0.85);
+  border: 1px solid #1a1a1a;
+  border-radius: 16px;
+  padding: 32px;
+  backdrop-filter: blur(16px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+}
+
+.formTitle {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: #666;
+  letter-spacing: 2px;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.aliasInput {
+  width: 100%;
+  padding: 16px;
+  background: #050505;
+  border: 1px solid #222;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 18px;
+  text-align: center;
+  margin-bottom: 24px;
+  outline: none;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  letter-spacing: 1px;
+  transition: border 0.2s;
+}
+
+.aliasInput:focus {
+  border: 1px solid #007aff;
+}
+
+.downloadBtn {
+  width: 100%;
+  padding: 16px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 800;
+  letter-spacing: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.downloadBtn.active {
+  background: #fff;
+  color: #000;
+}
+
+.downloadBtn.disabled {
+  background: #111;
+  color: #444;
+  cursor: not-allowed;
+}
+
+.encryptingText {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+}
+
+/* ------------------------------
+   HIDDEN BADGE RENDER FOR PDF 
+------------------------------ */
+.hiddenCaptureContainer {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+}
+
+.pdfBadge {
+  width: 420px;
+  height: 640px;
+  background: #070707;
+  border: 1px solid #222;
+  border-radius: 12px;
+  padding: 48px 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: 'Space Grotesk', sans-serif;
+  position: relative;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.badgeHeader {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 40px;
+}
+
+.badgeLogo {
+  height: 40px;
+  object-fit: contain;
+  opacity: 0.9;
+}
+
+.badgeIdLabel {
+  font-family: 'JetBrains Mono', monospace;
+  color: #444;
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-align: right;
+}
+
+.badgeIdValue {
+  color: #007aff;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  font-family: 'JetBrains Mono', monospace;
+  text-align: right;
+}
+
+.avatarBlock {
+  width: 160px;
+  height: 160px;
+  background: #0a0a0a;
+  border: 1px solid #1a1a1a;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 56px;
+  font-weight: 900;
+  color: #fff;
+  margin-bottom: 40px;
+  position: relative;
+  box-shadow: inset 0 0 30px rgba(0,0,0,0.8);
+}
+
+.verifiedBadge {
+  position: absolute;
+  bottom: -12px;
+  right: -12px;
+  background: #050505;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #007aff;
+}
+
+.nameBlock {
+  width: 100%;
+  text-align: left;
+  margin-bottom: 32px;
+}
+
+.nameLabel {
+  color: #555;
+  font-size: 10px;
+  letter-spacing: 2px;
+  margin-bottom: 4px;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.nameValue {
+  color: #fff;
+  font-size: 32px;
+  font-weight: 900;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.statsBlock {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: auto;
+  border-top: 1px solid #1a1a1a;
+  border-bottom: 1px solid #1a1a1a;
+  padding: 16px 0;
+}
+
+.statRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.statLabel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.statLabelText {
+  color: #666;
+  font-size: 11px;
+  letter-spacing: 2px;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.statValue {
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.statValueClearance {
+  color: #007aff;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.badgeFooter {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #444;
+  font-size: 10px;
+  letter-spacing: 1px;
+  font-family: 'JetBrains Mono', monospace;
+  margin-top: 32px;
+}
+
+.footerLocation {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
