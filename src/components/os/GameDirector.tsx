@@ -25,16 +25,20 @@ export default function GameDirector() {
     };
 
     if (gamePhase === 0) {
-      // Lockscreen puzzle hint
-      scheduleNotification("Mom", HINTS_REGISTRY.h1, 10000); // 10s after load
+      scheduleNotification("Mom", HINTS_REGISTRY.phase0_hint1, 10000); // 10s
+      scheduleNotification("Dad", HINTS_REGISTRY.phase0_hint2, 60000); // 60s
     } 
     else if (gamePhase === 1) {
-      // OSINT / Wi-Fi hint
-      scheduleNotification("Alex", HINTS_REGISTRY.h2, 15000); // 15s after unlock
+      scheduleNotification("Alex", HINTS_REGISTRY.phase1_hint1, 10000); // 10s
+      scheduleNotification("Alex", HINTS_REGISTRY.phase1_hint2, 45000); // 45s
     }
     else if (gamePhase === 2) {
-      // Router login hint
-      scheduleNotification("Dad", HINTS_REGISTRY.h3, 10000); // 10s after Wi-Fi connect
+      scheduleNotification("Alex", HINTS_REGISTRY.phase2_hint1, 10000); // 10s
+      scheduleNotification("Alex", HINTS_REGISTRY.phase2_hint2, 45000); // 45s
+    }
+    else if (gamePhase === 3) {
+      scheduleNotification("Alex", HINTS_REGISTRY.phase3_hint1, 10000); // 10s
+      scheduleNotification("Alex", HINTS_REGISTRY.phase3_hint2, 45000); // 45s
     }
 
     return () => {

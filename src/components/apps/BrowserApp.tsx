@@ -43,6 +43,17 @@ export default function BrowserApp() {
 
   const renderContent = () => {
     if (currentUrl === "192.168.0.1") {
+      // Must be connected to Wi-Fi to reach the gateway!
+      if (gamePhase < 2) {
+        return (
+          <div className={styles.notConnected}>
+            <RefreshCw size={48} color="#ccc" style={{ marginBottom: 16 }} />
+            <h3>No Internet Connection</h3>
+            <p>You must connect to a Wi-Fi network to reach this gateway.</p>
+          </div>
+        );
+      }
+
       if (!routerAuth) {
         return (
           <div className={styles.routerLogin}>
