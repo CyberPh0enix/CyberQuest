@@ -88,6 +88,15 @@ export default function GlobalOverlays() {
               <span>now</span>
             </div>
             <div className={styles.notifBody}>
+              {HINTS_REGISTRY.h2}
+            </div>
+          </div>
+          <div className={styles.notification}>
+            <div className={styles.notifHeader}>
+              <span>MESSAGES</span>
+              <span>1h ago</span>
+            </div>
+            <div className={styles.notifBody}>
               {HINTS_REGISTRY.h1}
             </div>
           </div>

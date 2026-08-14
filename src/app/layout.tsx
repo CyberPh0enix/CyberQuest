@@ -32,7 +32,7 @@ export const viewport = {
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" className={`${inter.variable} ${jetbrainsMono.variable}`} suppressHydrationWarning>
-      <body suppressHydrationWarning>
+      <body suppressHydrationWarning style={{ userSelect: 'none', WebkitUserSelect: 'none' }}>
         <ThemeProvider>
           {children}
         </ThemeProvider>

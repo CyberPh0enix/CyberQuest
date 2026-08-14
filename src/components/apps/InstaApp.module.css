@@ -35,6 +35,9 @@
   flex: 1;
   overflow-y: auto;
   padding-bottom: 80px; /* space for home indicator */
+  max-width: 450px;
+  margin: 0 auto;
+  width: 100%;
 }
 
 .post {

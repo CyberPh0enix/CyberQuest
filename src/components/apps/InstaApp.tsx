@@ -26,7 +26,7 @@ export default function InstaApp() {
           </div>
           
           <div className={styles.postImage} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#1a1a1a' }}>
-             <Cpu size={120} color="#ff3b30" />
+             <img src="/logo.png" alt="CyberPhoenix" style={{ width: '80%', height: 'auto', objectFit: 'contain' }} />
           </div>
           
           <div className={styles.postActions}>
