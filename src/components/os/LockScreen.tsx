@@ -103,7 +103,7 @@ export default function LockScreen() {
     >
       {/* View 1: The Wallpaper & Clock */}
       <div className={`${styles.wallpaperLayer} ${view === "passcode" ? styles.shifted : ""}`}>
-        <Lock size={20} fill="currentColor" className={styles.lockIcon} />
+        <Lock size={20} className={styles.lockIcon} />
         <div className={styles.clock}>{time || "00:00"}</div>
         <div className={styles.date}>{dateStr || "Loading..."}</div>
         

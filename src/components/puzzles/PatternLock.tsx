@@ -19,6 +19,7 @@ export default function PatternLock({
   const [currentPos, setCurrentPos] = useState<Point | null>(null);
   
   const containerRef = useRef<HTMLDivElement>(null);
+  const gridRef = useRef<HTMLDivElement>(null);
   const nodesRef = useRef<(HTMLDivElement | null)[]>([]);
 
   // Convert array like [2, 1, 0] into a string for comparison
@@ -27,7 +28,7 @@ export default function PatternLock({
     if (drawnStr === ENCRYPTED_ANSWERS.lockPatternHash) {
       onSuccess();
     } else {
-      setErrorStatus("Incorrect Passcode");
+      setErrorStatus("Incorrect Pattern");
       // Flash error for 1s then reset
       setTimeout(() => {
         setPattern([]);
@@ -51,9 +52,9 @@ export default function PatternLock({
   const handlePointerMove = (e: React.PointerEvent) => {
     if (!isDrawing) return;
     
-    // Update the live line end coordinate
-    if (containerRef.current) {
-      const rect = containerRef.current.getBoundingClientRect();
+    // Update the live line end coordinate relative to the grid
+    if (gridRef.current) {
+      const rect = gridRef.current.getBoundingClientRect();
       setCurrentPos({
         x: e.clientX - rect.left,
         y: e.clientY - rect.top
@@ -94,10 +95,10 @@ export default function PatternLock({
 
   // Build the SVG path connecting the selected nodes
   const buildSvgPath = () => {
-    if (pattern.length === 0 || !containerRef.current) return "";
+    if (pattern.length === 0 || !gridRef.current) return "";
     
     let path = "";
-    const rect = containerRef.current.getBoundingClientRect();
+    const rect = gridRef.current.getBoundingClientRect();
 
     pattern.forEach((nodeIndex, i) => {
       const nodeEl = nodesRef.current[nodeIndex];
@@ -129,7 +130,7 @@ export default function PatternLock({
       onPointerCancel={handlePointerUp}
       onPointerLeave={handlePointerUp}
     >
-      <div className={styles.grid}>
+      <div className={styles.grid} ref={gridRef}>
         {/* UV Smudge Mechanics */}
         <div className={styles.smudgeOverlay}></div>
         <svg className={styles.smudgeTrails}>
