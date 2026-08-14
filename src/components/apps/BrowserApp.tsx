@@ -12,13 +12,25 @@ export default function BrowserApp() {
   const [currentUrl, setCurrentUrl] = useState("");
   
   // Router State
+  const [rogueMac, setRogueMac] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [routerAuth, setRouterAuth] = useState(false);
   const [routerTab, setRouterTab] = useState<"dashboard" | "logs" | "access">("dashboard");
   const [macInput, setMacInput] = useState("");
   const [error, setError] = useState("");
+  const [showBadge, setShowBadge] = useState(false);
 
+  useEffect(() => {
+    const chars = "0123456789ABCDEF";
+    let mac = "";
+    for(let i=0; i<12; i++) {
+      mac += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    setRogueMac(mac);
+  }, []);
+
+  const formattedMac = rogueMac ? rogueMac.match(/.{1,2}/g)?.join(":") : "";
   const isBlocked = gamePhase >= 4;
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -34,7 +46,7 @@ export default function BrowserApp() {
 
   const handleRouterLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    if (username === "admin" && password === "cipherX") {
+    if (username === "admin" && password === "CyPh-8A3B") {
       setRouterAuth(true);
       if (gamePhase < 3) setGamePhase(3);
       setError("");
@@ -46,7 +58,7 @@ export default function BrowserApp() {
   const handleBlockSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const cleanMac = macInput.toUpperCase().replace(/[^A-Z0-9]/g, "");
-    if (cleanMac === "001A2B3C4D5E") {
+    if (cleanMac === rogueMac) {
       setGamePhase(4);
       setError("");
     } else {
@@ -142,7 +154,7 @@ export default function BrowserApp() {
                   <div className={styles.logLine}>[WARN] Unusual traffic volume detected on port 443</div>
                   <div className={styles.logLine}>[WARN] Bridge dropped 500 packets (Congestion)</div>
                   <div className={styles.logLine} style={{ color: '#ff3b30' }}>[CRITICAL] 192.168.0.99 is consuming 99% of total bandwidth!</div>
-                  <div className={styles.logLine}>[INFO] DHCP ACK 192.168.0.99 MAC: 00:1A:2B:3C:4D:5E</div>
+                  <div className={styles.logLine}>[INFO] DHCP ACK 192.168.0.99 MAC: {formattedMac}</div>
                   <div className={styles.logLine}>[INFO] NTP Synchronization complete.</div>
                   <div className={styles.logLine}>[INFO] Admin login from 192.168.0.105</div>
                 </div>
@@ -158,7 +170,7 @@ export default function BrowserApp() {
                       <ShieldCheck size={48} color="#2e7d32" style={{ marginBottom: 16 }} />
                       <h3>Network Secured</h3>
                       <p style={{ marginTop: 8 }}>Rogue connection dropped. Phase 4 Complete.</p>
-                      <button className={styles.rewardBtn} onClick={() => alert("GENERATING BADGE (TODO)")}>
+                      <button className={styles.rewardBtn} onClick={() => setShowBadge(true)}>
                         Claim Operative Badge
                       </button>
                     </div>
@@ -229,6 +241,20 @@ export default function BrowserApp() {
         <div className={styles.browserContent}>
           {renderContent()}
         </div>
+
+        {/* The Operative Badge Overlay */}
+        {showBadge && (
+          <div className={styles.badgeOverlay}>
+            <div className={styles.badgeContainer}>
+              <button className={styles.closeBadgeBtn} onClick={() => setShowBadge(false)}>
+                <X size={24} color="white" />
+              </button>
+              <h2 className={styles.badgeTitle}>WELCOME TO CYBERPHOENIX</h2>
+              <p className={styles.badgeSubtitle}>Verification Confirmed. ID Registered.</p>
+              <img src="/assets/operative_badge.png" alt="Operative Badge" className={styles.badgeImage} />
+            </div>
+          </div>
+        )}
         
         <div className={styles.browserToolbar}>
           <ChevronLeft size={24} color="#007aff" />

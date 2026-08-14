@@ -60,12 +60,12 @@ export default function GalleryApp() {
                     <div className={styles.stickerModel}>Nighthawk AC1900 Smart WiFi Router</div>
                     <div className={styles.stickerDivider}></div>
                     <div className={styles.stickerInfo}>
-                      <span><strong>Router Login</strong></span>
-                      <span>http://192.168.0.1</span>
+                      <span><strong>Admin Login</strong></span>
+                      <span>admin</span>
                     </div>
                     <div className={styles.stickerInfo}>
-                      <span><strong>admin</strong></span>
-                      <span><strong>cipherX</strong></span>
+                      <span><strong>Key</strong></span>
+                      <span style={{ fontFamily: 'monospace', letterSpacing: 1 }}>CyPh-8A3B</span>
                     </div>
                     <div className={styles.stickerDivider}></div>
                     <div className={styles.stickerBarcode}>|| |||| | |||||| || | || ||||</div>
