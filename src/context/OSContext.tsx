@@ -12,6 +12,10 @@ interface OSContextType {
   isHydrated: boolean;
   uvModeEnabled: boolean;
   setUvModeEnabled: (val: boolean) => void;
+  showControlCenter: boolean;
+  setShowControlCenter: (val: boolean) => void;
+  showNotifications: boolean;
+  setShowNotifications: (val: boolean) => void;
   appOrigin: { x: number, y: number } | null;
   setAppOrigin: (origin: { x: number, y: number } | null) => void;
   isClosing: boolean;
@@ -25,6 +29,8 @@ export function OSProvider({ children }: { children: ReactNode }) {
   const [activeApp, setActiveAppInternal] = useState<string | null>(null);
   const [isHydrated, setIsHydrated] = useState(false);
   const [uvModeEnabled, setUvModeEnabled] = useState(false);
+  const [showControlCenter, setShowControlCenter] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(false);
   
   const [appOrigin, setAppOrigin] = useState<{ x: number, y: number } | null>(null);
   const [isClosing, setIsClosing] = useState(false);
@@ -66,6 +72,8 @@ export function OSProvider({ children }: { children: ReactNode }) {
       activeApp, setActiveApp, 
       isHydrated,
       uvModeEnabled, setUvModeEnabled,
+      showControlCenter, setShowControlCenter,
+      showNotifications, setShowNotifications,
       appOrigin, setAppOrigin,
       isClosing, closeApp
     }}>

@@ -8,11 +8,14 @@ import {
   Camera, Calculator, Cast
 } from "lucide-react";
 import { HINTS_REGISTRY } from "@/data/puzzles";
+import { useOS } from "@/context/OSContext";
 
 export default function GlobalOverlays() {
-  const [showControlCenter, setShowControlCenter] = useState(false);
-  const [showNotifications, setShowNotifications] = useState(false);
-  const [uvModeEnabled, setUvModeEnabled] = useState(false);
+  const { 
+    uvModeEnabled, setUvModeEnabled, 
+    showControlCenter, setShowControlCenter, 
+    showNotifications, setShowNotifications 
+  } = useOS();
   
   // Dummy CC states
   const [toggles, setToggles] = useState({ wifi: true, bt: true, plane: false, calc: false, cam: false, cast: false });
@@ -69,6 +72,19 @@ export default function GlobalOverlays() {
     setter(percentage);
   };
 
+  const handleTopBarClick = (e: React.MouseEvent) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const clickX = e.clientX - rect.left;
+    
+    if (clickX < rect.width / 2) {
+      setShowNotifications(!showNotifications);
+      setShowControlCenter(false);
+    } else {
+      setShowControlCenter(!showControlCenter);
+      setShowNotifications(false);
+    }
+  };
+
   return (
     <div 
       style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: (showControlCenter || showNotifications) ? 'auto' : 'none', zIndex: 100 }}
@@ -76,8 +92,11 @@ export default function GlobalOverlays() {
       onPointerUp={handlePointerUp}
       onPointerCancel={handlePointerUp}
     >
-      {/* Invisible Top Edge Hitbox */}
-      <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '30px', pointerEvents: 'auto', zIndex: 101 }}></div>
+      {/* Invisible Top Edge Hitbox (Clickable for Desktop users) */}
+      <div 
+        style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '30px', pointerEvents: 'auto', zIndex: 101, cursor: 'pointer' }}
+        onClick={handleTopBarClick}
+      ></div>
 
       {/* View 1.5: Swipe down Notification Center */}
       <div className={`${styles.notificationLayer} ${showNotifications ? styles.active : ""}`}>
