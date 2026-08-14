@@ -3,18 +3,21 @@
 import { useState } from "react";
 import styles from "./SettingsApp.module.css";
 import AppContainer from "../os/AppContainer";
-import { ChevronRight, Wifi, Bluetooth, Plane, Info } from "lucide-react";
+import { ChevronRight, Wifi, Bluetooth, Plane, Info, Lock } from "lucide-react";
+import { useOS } from "@/context/OSContext";
 
 export default function SettingsApp() {
+  const { gamePhase, setGamePhase } = useOS();
   const [view, setView] = useState<"main" | "wifi">("main");
-  const [wifiConnected, setWifiConnected] = useState(false);
   const [wifiPassword, setWifiPassword] = useState("");
   const [showPrompt, setShowPrompt] = useState(false);
   const [error, setError] = useState("");
 
+  const wifiConnected = gamePhase >= 2;
+
   const handleConnect = () => {
     if (wifiPassword.toLowerCase().replace(/\s/g, "") === "buster2023") {
-      setWifiConnected(true);
+      setGamePhase(2);
       setShowPrompt(false);
       setError("");
     } else {
@@ -80,14 +83,15 @@ export default function SettingsApp() {
                 </div>
               </div>
 
-              <h2 className={styles.sectionTitle}>NETWORKS</h2>
+              <h2 className={styles.sectionTitle}>MY NETWORKS</h2>
               <div className={styles.listItem} onClick={() => !wifiConnected && setShowPrompt(true)}>
                 <div className={styles.itemText}>
                   Home_Network_5G
                 </div>
                 <div className={styles.itemRight}>
-                  {wifiConnected ? <Wifi size={18} color="#007aff" /> : <Wifi size={18} color="#8e8e93" />}
-                  <Info size={22} color="#007aff" style={{ marginLeft: 8 }} />
+                  {!wifiConnected && <Lock size={14} color="#8e8e93" style={{ marginRight: 4 }} />}
+                  {wifiConnected ? <Wifi size={18} color="#0a84ff" /> : <Wifi size={18} color="#8e8e93" />}
+                  <Info size={22} color="#0a84ff" style={{ marginLeft: 8 }} />
                 </div>
               </div>
 
@@ -107,6 +111,31 @@ export default function SettingsApp() {
                   </div>
                 </div>
               )}
+
+              <h2 className={styles.sectionTitle}>OTHER NETWORKS</h2>
+              <div className={styles.listItem}>
+                <div className={styles.itemText}>xfinitywifi</div>
+                <div className={styles.itemRight}>
+                  <Wifi size={18} color="#8e8e93" />
+                  <Info size={22} color="#0a84ff" style={{ marginLeft: 8 }} />
+                </div>
+              </div>
+              <div className={styles.listItem}>
+                <div className={styles.itemText}>Guest_Net</div>
+                <div className={styles.itemRight}>
+                  <Lock size={14} color="#8e8e93" style={{ marginRight: 4 }} />
+                  <Wifi size={18} color="#8e8e93" />
+                  <Info size={22} color="#0a84ff" style={{ marginLeft: 8 }} />
+                </div>
+              </div>
+              <div className={styles.listItem}>
+                <div className={styles.itemText}>NETGEAR_24</div>
+                <div className={styles.itemRight}>
+                  <Lock size={14} color="#8e8e93" style={{ marginRight: 4 }} />
+                  <Wifi size={18} color="#8e8e93" />
+                  <Info size={22} color="#0a84ff" style={{ marginLeft: 8 }} />
+                </div>
+              </div>
             </div>
           )}
         </div>

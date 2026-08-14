@@ -233,14 +233,34 @@
 
 .successBanner {
   margin-top: 24px;
-  padding: 16px;
+  padding: 32px 16px;
   background: #e8f5e9;
   color: #2e7d32;
   border-radius: 8px;
   border: 1px solid #a5d6a7;
-  font-weight: 600;
   text-align: center;
   animation: slideIn 0.5s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.rewardBtn {
+  margin-top: 24px;
+  background: #2e7d32;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 6px;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(46, 125, 50, 0.4);
+  transition: transform 0.2s;
+}
+
+.rewardBtn:active {
+  transform: scale(0.95);
 }
 
 @keyframes slideIn {

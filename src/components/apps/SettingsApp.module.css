@@ -1,8 +1,8 @@
 .appWrapper {
   width: 100%;
   height: 100%;
-  background: #f2f2f7;
-  color: black;
+  background: #000000;
+  color: white;
   display: flex;
   flex-direction: column;
 }
@@ -15,14 +15,14 @@
   font-family: var(--font-sans);
   font-size: 32px;
   font-weight: 700;
-  background: #f2f2f7;
-  border-bottom: 1px solid rgba(0,0,0,0.1);
+  background: #000000;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
 }
 
 .backBtn {
   background: none;
   border: none;
-  color: #007aff;
+  color: #0a84ff;
   font-size: 17px;
   display: flex;
   align-items: center;
@@ -44,7 +44,7 @@
 }
 
 .list {
-  background: white;
+  background: #1c1c1e;
   border-radius: 10px;
   overflow: hidden;
   margin-bottom: 24px;
@@ -52,7 +52,7 @@
 
 .sectionTitle {
   font-size: 13px;
-  color: #6d6d72;
+  color: #8e8e93;
   margin: 16px 0 8px 16px;
   text-transform: uppercase;
 }
@@ -61,7 +61,7 @@
   display: flex;
   align-items: center;
   padding: 12px 16px;
-  border-bottom: 1px solid rgba(0,0,0,0.05);
+  border-bottom: 1px solid rgba(255,255,255,0.1);
   cursor: pointer;
 }
 
@@ -70,7 +70,7 @@
 }
 
 .listItem:active {
-  background: #e5e5ea;
+  background: #2c2c2e;
 }
 
 .iconBox {
@@ -128,7 +128,7 @@
 }
 
 .networkDetails {
-  background: white;
+  background: #1c1c1e;
   border-radius: 10px;
   padding: 16px;
   margin-top: 16px;
@@ -141,11 +141,11 @@
   display: flex;
   justify-content: space-between;
   font-size: 15px;
-  color: #333;
+  color: #fff;
 }
 
 .highlight {
-  color: #007aff;
+  color: #0a84ff;
   font-weight: 600;
 }
 
@@ -155,7 +155,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0,0,0,0.4);
+  background: rgba(0,0,0,0.6);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -163,7 +163,7 @@
 }
 
 .promptBox {
-  background: rgba(255,255,255,0.9);
+  background: rgba(44,44,46,0.95);
   backdrop-filter: blur(20px);
   width: 270px;
   border-radius: 14px;
@@ -171,13 +171,14 @@
   flex-direction: column;
   align-items: center;
   padding-top: 20px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
 }
 
 .promptBox h3 {
   font-size: 17px;
   font-weight: 600;
   margin-bottom: 4px;
+  color: white;
 }
 
 .promptBox p {
@@ -185,12 +186,15 @@
   text-align: center;
   padding: 0 16px;
   margin-bottom: 16px;
+  color: white;
 }
 
 .promptBox input {
   width: 90%;
   padding: 8px;
-  border: 1px solid rgba(0,0,0,0.2);
+  background: #1c1c1e;
+  color: white;
+  border: 1px solid rgba(255,255,255,0.2);
   border-radius: 6px;
   margin-bottom: 16px;
   font-size: 14px;
@@ -198,7 +202,7 @@
 }
 
 .error {
-  color: #ff3b30;
+  color: #ff453a;
   font-size: 12px;
   margin-bottom: 8px;
   animation: shake 0.3s;
@@ -213,7 +217,7 @@
 .promptActions {
   display: flex;
   width: 100%;
-  border-top: 1px solid rgba(0,0,0,0.2);
+  border-top: 1px solid rgba(255,255,255,0.2);
 }
 
 .promptActions button {
@@ -222,14 +226,14 @@
   border: none;
   padding: 12px;
   font-size: 17px;
-  color: #007aff;
+  color: #0a84ff;
   cursor: pointer;
 }
 
 .promptActions button:first-child {
-  border-right: 1px solid rgba(0,0,0,0.2);
+  border-right: 1px solid rgba(255,255,255,0.2);
 }
 
 .promptActions button:active {
-  background: rgba(0,0,0,0.05);
+  background: rgba(255,255,255,0.1);
 }

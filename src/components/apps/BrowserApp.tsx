@@ -1,11 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import styles from "./BrowserApp.module.css";
 import AppContainer from "../os/AppContainer";
-import { Lock, RefreshCw, X, Menu } from "lucide-react";
+import { Lock, RefreshCw, X, Menu, ShieldCheck } from "lucide-react";
+import { useOS } from "@/context/OSContext";
 
 export default function BrowserApp() {
+  const { gamePhase, setGamePhase } = useOS();
   const [url, setUrl] = useState("");
   const [currentUrl, setCurrentUrl] = useState("");
   
@@ -14,7 +16,8 @@ export default function BrowserApp() {
   const [password, setPassword] = useState("");
   const [routerAuth, setRouterAuth] = useState(false);
   const [error, setError] = useState("");
-  const [deviceBlocked, setDeviceBlocked] = useState(false);
+
+  const isBlocked = gamePhase >= 4;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -23,10 +26,15 @@ export default function BrowserApp() {
     setCurrentUrl(finalUrl);
   };
 
+  const handleBlockDevice = () => {
+    setGamePhase(4);
+  };
+
   const handleRouterLogin = (e: React.FormEvent) => {
     e.preventDefault();
     if (username === "admin" && password === "cipherX") {
       setRouterAuth(true);
+      if (gamePhase < 3) setGamePhase(3);
       setError("");
     } else {
       setError("Invalid username or password");
@@ -84,21 +92,26 @@ export default function BrowserApp() {
                   <div>
                     <strong>UNKNOWN_ROGUE</strong><br/>
                     <small>192.168.0.99 | 00:1A:2B:3C:4D:5E</small><br/>
-                    <span className={styles.bandwidthWarning}>Bandwidth Usage: 99% (Hogging)</span>
+                    {!isBlocked && <span className={styles.bandwidthWarning}>Bandwidth Usage: 99% (Hogging)</span>}
                   </div>
-                  {deviceBlocked ? (
+                  {isBlocked ? (
                     <span className={styles.statusBlocked}>Blocked</span>
                   ) : (
-                    <button className={styles.blockBtn} onClick={() => setDeviceBlocked(true)}>
+                    <button className={styles.blockBtn} onClick={handleBlockDevice}>
                       Block Device
                     </button>
                   )}
                 </div>
               </div>
 
-              {deviceBlocked && (
+              {isBlocked && (
                 <div className={styles.successBanner}>
-                  Network secured! Rogue device blocked successfully. Phase 4 Complete.
+                  <ShieldCheck size={48} color="#2e7d32" style={{ marginBottom: 16 }} />
+                  <h3>Network Secured</h3>
+                  <p style={{ marginTop: 8 }}>Rogue connection dropped. Phase 4 Complete.</p>
+                  <button className={styles.rewardBtn} onClick={() => alert("GENERATING BADGE (TODO)")}>
+                    Claim Operative Badge
+                  </button>
                 </div>
               )}
             </div>
