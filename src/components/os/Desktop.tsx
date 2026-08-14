@@ -26,18 +26,35 @@ const DOCK_APPS = [
 ];
 
 export default function Desktop() {
-  const { setActiveApp } = useOS();
+  const { setActiveApp, setAppOrigin } = useOS();
+
+  const handleAppClick = (e: React.MouseEvent, appId: string) => {
+    const iconRect = e.currentTarget.getBoundingClientRect();
+    const screenEl = e.currentTarget.closest('[data-screen="true"]');
+    
+    if (screenEl) {
+      const screenRect = screenEl.getBoundingClientRect();
+      setAppOrigin({ 
+        x: (iconRect.left - screenRect.left) + iconRect.width / 2, 
+        y: (iconRect.top - screenRect.top) + iconRect.height / 2 
+      });
+    } else {
+      setAppOrigin({ x: iconRect.left + iconRect.width / 2, y: iconRect.top + iconRect.height / 2 });
+    }
+    
+    setActiveApp(appId);
+  };
 
   return (
     <div className={styles.desktopWrapper}>
       
       {/* Main Grid */}
       <div className={styles.appGrid}>
-        {APPS.map(app => (
+        {APPS.map((app) => (
           <div 
             key={app.id} 
             className={styles.appWrapper}
-            onClick={() => setActiveApp(app.id)}
+            onClick={(e) => handleAppClick(e, app.id)}
           >
             <div className={styles.appIcon}>
               <app.Icon size={32} strokeWidth={1.5} color={app.color} />
@@ -49,12 +66,11 @@ export default function Desktop() {
 
       {/* Dock */}
       <div className={styles.dock}>
-        {DOCK_APPS.map(app => (
+        {DOCK_APPS.map((app) => (
           <div 
             key={app.id} 
             className={styles.appWrapper}
-            // For dummy apps, we can just log or alert, or actually set activeApp to show a stub
-            onClick={() => setActiveApp(app.id)}
+            onClick={(e) => handleAppClick(e, app.id)}
           >
             <div className={styles.appIcon}>
               <app.Icon size={32} strokeWidth={1.5} color={app.color} />

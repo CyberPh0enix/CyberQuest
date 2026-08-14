@@ -11,14 +11,20 @@ interface AppContainerProps {
 }
 
 export default function AppContainer({ appId, appName, children }: AppContainerProps) {
-  const { activeApp, setActiveApp } = useOS();
+  const { activeApp, closeApp, appOrigin, isClosing } = useOS();
+  const [mounted, setMounted] = useState(false);
   const [dragY, setDragY] = useState(0);
   const startY = useRef(0);
   const isDragging = useRef(false);
 
-  // Swipe to close logic (iOS style)
+  useEffect(() => {
+    // Mount un-shrunk on next frame
+    const frame = requestAnimationFrame(() => setMounted(true));
+    return () => cancelAnimationFrame(frame);
+  }, []);
+
+  // Swipe to close logic (iOS style fallback from AppContainer body)
   const handlePointerDown = (e: React.PointerEvent) => {
-    // Only allow swipe to close from the very bottom edge (Home Indicator zone)
     if (window.innerHeight - e.clientY < 50) {
       isDragging.current = true;
       startY.current = e.clientY;
@@ -39,9 +45,8 @@ export default function AppContainer({ appId, appName, children }: AppContainerP
     
     // If swiped up more than 100px, close the app
     if (dragY < -100) {
-      setActiveApp(null);
+      closeApp();
     } else {
-      // Snap back
       setDragY(0);
     }
   };
@@ -51,14 +56,20 @@ export default function AppContainer({ appId, appName, children }: AppContainerP
   const scale = dragY < 0 ? Math.max(0.7, 1 + (dragY / 1000)) : 1;
   const opacity = dragY < 0 ? Math.max(0, 1 + (dragY / 300)) : 1;
 
+  const dynamicStyle: React.CSSProperties = {
+    transformOrigin: appOrigin ? `${appOrigin.x}px ${appOrigin.y}px` : 'center center',
+  };
+
+  if (dragY < 0) {
+    dynamicStyle.transform = `translateY(${dragY}px) scale(${scale})`;
+    dynamicStyle.opacity = opacity;
+    dynamicStyle.transition = isDragging.current ? 'none' : 'transform 0.3s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.3s ease';
+  }
+
   return (
     <div 
-      className={styles.appContainer}
-      style={{
-        transform: dragY < 0 ? `translateY(${dragY}px) scale(${scale})` : undefined,
-        opacity: opacity,
-        transition: isDragging.current ? 'none' : 'transform 0.3s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.3s ease'
-      }}
+      className={`${styles.appContainer} ${(!mounted || isClosing) ? styles.shrunk : ''}`}
+      style={dynamicStyle}
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
@@ -67,7 +78,7 @@ export default function AppContainer({ appId, appName, children }: AppContainerP
     >
       <div className={styles.macWindowHeader}>
         <div className={styles.macTrafficLights}>
-          <div className={styles.macClose} onClick={() => setActiveApp(null)}></div>
+          <div className={styles.macClose} onClick={closeApp}></div>
           <div className={styles.macMin}></div>
           <div className={styles.macMax}></div>
         </div>

@@ -21,23 +21,25 @@ function OSRouter() {
     return <LockScreen />;
   }
 
-  if (activeApp) {
-    if (activeApp === "insta") return <InstaApp />;
-    if (activeApp === "vault") return <VaultApp />;
-    
-    // Elegant Stub for unimplemented apps
-    return (
-      <AppContainer appId={activeApp} appName={activeApp.charAt(0).toUpperCase() + activeApp.slice(1)}>
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', color: 'var(--text-dim)' }}>
-          <Settings2 size={64} style={{ marginBottom: 16, opacity: 0.5 }} />
-          <h2>App Not Implemented</h2>
-          <p>This module is currently offline.</p>
-        </div>
-      </AppContainer>
-    );
-  }
-
-  return <Desktop />;
+  return (
+    <>
+      <Desktop />
+      
+      {activeApp === "insta" && <InstaApp />}
+      {activeApp === "vault" && <VaultApp />}
+      
+      {/* Elegant Stub for unimplemented apps */}
+      {activeApp && activeApp !== "insta" && activeApp !== "vault" && (
+        <AppContainer appId={activeApp} appName={activeApp.charAt(0).toUpperCase() + activeApp.slice(1)}>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', color: 'var(--text-dim)' }}>
+            <Settings2 size={64} style={{ marginBottom: 16, opacity: 0.5 }} />
+            <h2>App Not Implemented</h2>
+            <p>This module is currently offline.</p>
+          </div>
+        </AppContainer>
+      )}
+    </>
+  );
 }
 
 import GlobalOverlays from "./GlobalOverlays";
@@ -62,7 +64,7 @@ export default function DeviceShell({ children }: DeviceShellProps) {
     <OSProvider>
       <div className={styles.workspace}>
         <div className={styles.deviceFrame}>
-          <div className={styles.screen}>
+          <div className={styles.screen} data-screen="true">
             <ScreenContent />
           </div>
         </div>

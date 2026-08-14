@@ -8,9 +8,18 @@
   z-index: 30;
   display: flex;
   flex-direction: column;
-  animation: appOpenZoom 0.3s cubic-bezier(0.32, 0.72, 0, 1) forwards;
-  transform-origin: center center;
   overflow: hidden;
+  transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.2s ease, border-radius 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+  transform: scale(1);
+  opacity: 1;
+  border-radius: 0px;
+}
+
+.shrunk {
+  transform: scale(0.05) !important;
+  opacity: 0 !important;
+  border-radius: 40px !important;
+  pointer-events: none;
 }
 
 .appContent {
@@ -36,11 +45,6 @@
   .appContent {
     padding-top: 0; /* Mac windows don't have notches */
   }
-}
-
-@keyframes appOpenZoom {
-  0% { transform: scale(0.85); opacity: 0; filter: blur(4px); }
-  100% { transform: scale(1); opacity: 1; filter: blur(0); }
 }
 
 /* macOS Window Header (hidden on mobile) */

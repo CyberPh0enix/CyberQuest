@@ -5,7 +5,7 @@ import { useOS } from "@/context/OSContext";
 import styles from "./HomeIndicator.module.css";
 
 export default function HomeIndicator() {
-  const { activeApp, setActiveApp } = useOS();
+  const { activeApp, closeApp } = useOS();
   const startY = useRef(0);
   const isDragging = useRef(false);
 
@@ -22,10 +22,10 @@ export default function HomeIndicator() {
     
     // Swipe UP to close app
     if (deltaY < -30 && activeApp) {
-      setActiveApp(null);
+      closeApp();
     } else if (Math.abs(deltaY) < 10 && activeApp) {
       // Tap to close (fallback)
-      setActiveApp(null);
+      closeApp();
     }
   };
 
