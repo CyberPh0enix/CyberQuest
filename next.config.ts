@@ -1,7 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  // explicitly allow lan connections so react hydrated correctly
+  allowedDevOrigins: ["*"],
 };
 
 export default nextConfig;
