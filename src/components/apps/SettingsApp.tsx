@@ -5,6 +5,7 @@ import styles from "./SettingsApp.module.css";
 import AppContainer from "../os/AppContainer";
 import { ChevronRight, Wifi, Bluetooth, Plane, Info, Lock } from "lucide-react";
 import { useOS } from "@/context/OSContext";
+import { QUEST_CONFIG } from "@/config/quest";
 
 export default function SettingsApp() {
   const { gamePhase, setGamePhase } = useOS();
@@ -14,22 +15,21 @@ export default function SettingsApp() {
   const [localConnected, setLocalConnected] = useState<string | null>(null);
   const [error, setError] = useState("");
 
-  const activeNetwork = gamePhase >= 2 ? "Home_Network_5G" : localConnected;
+  const activeNetwork = gamePhase >= 2 ? QUEST_CONFIG.wifi.targetSSID : localConnected;
 
   const handleConnect = () => {
-    if (promptNetwork === "Home_Network_5G") {
-      if (wifiPassword.toLowerCase().replace(/\s/g, "") === "buster2023") {
+    const correctPassword = atob(QUEST_CONFIG.wifi.passwordBase64);
+    
+    if (wifiPassword.toLowerCase().replace(/\s/g, "") === correctPassword) {
+      if (promptNetwork === QUEST_CONFIG.wifi.targetSSID) {
         setGamePhase(2);
-        setPromptNetwork(null);
-        setError("");
       } else {
-        setError("Incorrect password");
+        setLocalConnected(promptNetwork);
       }
-    } else {
-      // Decoys accept any password (or none)
-      setLocalConnected(promptNetwork);
       setPromptNetwork(null);
       setError("");
+    } else {
+      setError("Incorrect password");
     }
   };
 
@@ -92,18 +92,18 @@ export default function SettingsApp() {
               </div>
 
               <h2 className={styles.sectionTitle}>MY NETWORKS</h2>
-              <div className={styles.listItem} onClick={() => activeNetwork !== "Home_Network_5G" && setPromptNetwork("Home_Network_5G")}>
+              <div className={styles.listItem} onClick={() => activeNetwork !== QUEST_CONFIG.wifi.targetSSID && setPromptNetwork(QUEST_CONFIG.wifi.targetSSID)}>
                 <div className={styles.itemText}>
-                  Home_Network_5G
+                  {QUEST_CONFIG.wifi.targetSSID}
                 </div>
                 <div className={styles.itemRight}>
-                  {activeNetwork !== "Home_Network_5G" && <Lock size={14} color="#8e8e93" style={{ marginRight: 4 }} />}
-                  {activeNetwork === "Home_Network_5G" ? <Wifi size={18} color="#0a84ff" /> : <Wifi size={18} color="#8e8e93" />}
+                  {activeNetwork !== QUEST_CONFIG.wifi.targetSSID && <Lock size={14} color="#8e8e93" style={{ marginRight: 4 }} />}
+                  {activeNetwork === QUEST_CONFIG.wifi.targetSSID ? <Wifi size={18} color="#0a84ff" /> : <Wifi size={18} color="#8e8e93" />}
                   <Info size={22} color="#0a84ff" style={{ marginLeft: 8 }} />
                 </div>
               </div>
 
-              {activeNetwork === "Home_Network_5G" && (
+              {activeNetwork === QUEST_CONFIG.wifi.targetSSID && (
                 <div className={styles.networkDetails}>
                   <div className={styles.detailRow}>
                     <span>IP Address</span>
@@ -115,7 +115,7 @@ export default function SettingsApp() {
                   </div>
                   <div className={styles.detailRow}>
                     <span>Router</span>
-                    <span className={styles.highlight}>192.168.0.1</span>
+                    <span className={styles.highlight}>{QUEST_CONFIG.router.gatewayIP}</span>
                   </div>
                 </div>
               )}

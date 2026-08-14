@@ -5,6 +5,9 @@ import styles from "./BrowserApp.module.css";
 import AppContainer from "../os/AppContainer";
 import { Lock, RefreshCw, X, Menu, ShieldCheck } from "lucide-react";
 import { useOS } from "@/context/OSContext";
+import { QUEST_CONFIG } from "@/config/quest";
+import BadgeGenerator from "./BadgeGenerator";
+import BadgeGenerator from "./BadgeGenerator";
 
 export default function BrowserApp() {
   const { gamePhase, setGamePhase } = useOS();
@@ -46,7 +49,8 @@ export default function BrowserApp() {
 
   const handleRouterLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    if (username === "admin" && password === "CyPh-8A3B") {
+    const correctPassword = atob(QUEST_CONFIG.router.passwordBase64);
+    if (username === QUEST_CONFIG.router.username && password === correctPassword) {
       setRouterAuth(true);
       if (gamePhase < 3) setGamePhase(3);
       setError("");
@@ -67,7 +71,7 @@ export default function BrowserApp() {
   };
 
   const renderContent = () => {
-    if (currentUrl === "192.168.0.1") {
+    if (currentUrl === QUEST_CONFIG.router.gatewayIP) {
       // Must be connected to Wi-Fi to reach the gateway!
       if (gamePhase < 2) {
         return (
@@ -243,18 +247,7 @@ export default function BrowserApp() {
         </div>
 
         {/* The Operative Badge Overlay */}
-        {showBadge && (
-          <div className={styles.badgeOverlay}>
-            <div className={styles.badgeContainer}>
-              <button className={styles.closeBadgeBtn} onClick={() => setShowBadge(false)}>
-                <X size={24} color="white" />
-              </button>
-              <h2 className={styles.badgeTitle}>WELCOME TO CYBERPHOENIX</h2>
-              <p className={styles.badgeSubtitle}>Verification Confirmed. ID Registered.</p>
-              <img src="/assets/operative_badge.png" alt="Operative Badge" className={styles.badgeImage} />
-            </div>
-          </div>
-        )}
+        {showBadge && <BadgeGenerator onClose={() => setShowBadge(false)} />}
         
         <div className={styles.browserToolbar}>
           <ChevronLeft size={24} color="#007aff" />

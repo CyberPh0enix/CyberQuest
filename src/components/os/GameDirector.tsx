@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import { useOS } from "@/context/OSContext";
 import { HINTS_REGISTRY } from "@/data/puzzles";
+import { QUEST_CONFIG } from "@/config/quest";
 
 export default function GameDirector() {
   const { gamePhase, addNotification } = useOS();
