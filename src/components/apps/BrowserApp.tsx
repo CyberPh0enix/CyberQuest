@@ -6,11 +6,9 @@ import AppContainer from "../os/AppContainer";
 import { Lock, RefreshCw, X, Menu, ShieldCheck } from "lucide-react";
 import { useOS } from "@/context/OSContext";
 import { QUEST_CONFIG } from "@/config/quest";
-import BadgeGenerator from "./BadgeGenerator";
-import BadgeGenerator from "./BadgeGenerator";
 
 export default function BrowserApp() {
-  const { gamePhase, setGamePhase } = useOS();
+  const { gamePhase, setGamePhase, setActiveApp } = useOS();
   const [url, setUrl] = useState("");
   const [currentUrl, setCurrentUrl] = useState("");
   
@@ -22,7 +20,6 @@ export default function BrowserApp() {
   const [routerTab, setRouterTab] = useState<"dashboard" | "logs" | "access">("dashboard");
   const [macInput, setMacInput] = useState("");
   const [error, setError] = useState("");
-  const [showBadge, setShowBadge] = useState(false);
 
   useEffect(() => {
     const chars = "0123456789ABCDEF";
@@ -174,8 +171,11 @@ export default function BrowserApp() {
                       <ShieldCheck size={48} color="#2e7d32" style={{ marginBottom: 16 }} />
                       <h3>Network Secured</h3>
                       <p style={{ marginTop: 8 }}>Rogue connection dropped. Phase 4 Complete.</p>
-                      <button className={styles.rewardBtn} onClick={() => setShowBadge(true)}>
-                        Claim Operative Badge
+                      <button className={styles.rewardBtn} onClick={() => {
+                        setGamePhase(4);
+                        setActiveApp("badge");
+                      }}>
+                        System Locked
                       </button>
                     </div>
                   ) : (
@@ -245,9 +245,6 @@ export default function BrowserApp() {
         <div className={styles.browserContent}>
           {renderContent()}
         </div>
-
-        {/* The Operative Badge Overlay */}
-        {showBadge && <BadgeGenerator onClose={() => setShowBadge(false)} />}
         
         <div className={styles.browserToolbar}>
           <ChevronLeft size={24} color="#007aff" />

@@ -1,19 +1,33 @@
+"use client";
+
 import React, { useState, useRef, useEffect } from "react";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
-import { Download, ShieldCheck, MapPin, TerminalSquare, X } from "lucide-react";
+import { Download, ShieldCheck, MapPin, TerminalSquare, X, BadgeCheck, ShieldAlert } from "lucide-react";
 import { QUEST_CONFIG } from "@/config/quest";
+import { useOS } from "@/context/OSContext";
+import AppContainer from "../os/AppContainer";
 
-export default function BadgeGenerator({ onClose }: { onClose: () => void }) {
+export default function BadgeGenerator() {
+  const { gamePhase } = useOS();
   const [name, setName] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
   const [showContent, setShowContent] = useState(false);
   const badgeRef = useRef<HTMLDivElement>(null);
 
+  // Auto-launch when game is solved
+  const isSolved = gamePhase >= 4;
+
   useEffect(() => {
-    const timer = setTimeout(() => setShowContent(true), 1500);
-    return () => clearTimeout(timer);
-  }, []);
+    if (isSolved) {
+      const timer = setTimeout(() => setShowContent(true), 1500);
+      return () => clearTimeout(timer);
+    } else {
+      setShowContent(false);
+    }
+  }, [isSolved]);
+
+  if (!isSolved) return null;
 
   const getInitials = (name: string) => {
     const words = name.trim().split(/\s+/);
@@ -28,7 +42,6 @@ export default function BadgeGenerator({ onClose }: { onClose: () => void }) {
     
     setIsGenerating(true);
     try {
-      // Temporarily ensure high quality
       const canvas = await html2canvas(badgeRef.current, {
         scale: 3,
         useCORS: true,
@@ -52,26 +65,25 @@ export default function BadgeGenerator({ onClose }: { onClose: () => void }) {
   };
 
   return (
-    <div className="fixed inset-0 z-[300] bg-black text-white font-mono overflow-y-auto" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-      <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(circle at center, rgba(0,255,255,0.1) 0, transparent 60%)', animation: 'pulse 4s infinite' }}></div>
+    <AppContainer appId="badge" appName="Clearance">
+      <div className="h-full w-full bg-black text-white font-mono overflow-y-auto custom-scrollbar relative" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+        {/* Background Pulse */}
+        <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(circle at center, rgba(0,122,255,0.15) 0, transparent 70%)', animation: 'pulse 4s infinite' }}></div>
 
       {showContent && (
-        <div style={{ zIndex: 10, width: '100%', maxWidth: '600px', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', animation: 'fadeIn 1s ease' }}>
-          <button onClick={onClose} style={{ position: 'absolute', top: 24, right: 24, background: 'rgba(255,255,255,0.1)', border: 'none', borderRadius: '50%', padding: 8, cursor: 'pointer' }}>
-            <X size={24} color="white" />
-          </button>
+        <div style={{ zIndex: 10, width: '100%', maxWidth: '600px', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', animation: 'fadeIn 1s ease', padding: 24 }}>
           
-          <ShieldCheck size={64} color="#00ffff" style={{ filter: 'drop-shadow(0 0 10px #00ffff)', marginBottom: 24 }} />
-          <h1 style={{ fontSize: '32px', fontWeight: 900, letterSpacing: 4, color: '#00ffff', marginBottom: 8, textTransform: 'uppercase' }}>
-            SYSTEM RECLAIMED
+          <ShieldCheck size={64} color="#007aff" style={{ filter: 'drop-shadow(0 0 15px #007aff)', marginBottom: 24 }} />
+          <h1 style={{ fontSize: '32px', fontWeight: 900, letterSpacing: 2, color: '#fff', marginBottom: 8, textTransform: 'uppercase' }}>
+            OPERATION CONCLUDED
           </h1>
-          <p style={{ color: '#a5d6a7', letterSpacing: 2, marginBottom: 32, fontSize: '14px' }}>
-            ROGUE CONNECTION TERMINATED. NETWORK SECURED.
+          <p style={{ color: '#007aff', letterSpacing: 2, marginBottom: 32, fontSize: '12px', fontWeight: 'bold' }}>
+            NETWORK SECURED. CLEARANCE GRANTED.
           </p>
 
-          <div style={{ width: '100%', background: 'rgba(20,20,20,0.8)', border: '1px solid #333', borderRadius: 12, padding: 32, backdropFilter: 'blur(10px)' }}>
-            <h2 style={{ fontSize: '12px', color: '#888', letterSpacing: 2, marginBottom: 24, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
-              <TerminalSquare size={16} /> GENERATE OPERATIVE CREDENTIALS
+          <div style={{ width: '100%', background: 'rgba(10,10,10,0.8)', border: '1px solid #222', borderRadius: 16, padding: 32, backdropFilter: 'blur(10px)', boxShadow: '0 20px 40px rgba(0,0,0,0.5)' }}>
+            <h2 style={{ fontSize: '11px', color: '#888', letterSpacing: 2, marginBottom: 24, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+              <TerminalSquare size={14} /> GENERATE CREDENTIALS
             </h2>
 
             <input 
@@ -79,7 +91,9 @@ export default function BadgeGenerator({ onClose }: { onClose: () => void }) {
               placeholder="Enter your Name or Alias..." 
               value={name}
               onChange={(e) => setName(e.target.value)}
-              style={{ width: '100%', padding: '16px', background: '#000', border: '1px solid #00ffff', borderRadius: 8, color: '#fff', fontSize: '18px', textAlign: 'center', marginBottom: 24, outline: 'none', fontFamily: 'monospace' }}
+              style={{ width: '100%', padding: '16px', background: '#000', border: '1px solid #333', borderRadius: 8, color: '#fff', fontSize: '16px', textAlign: 'center', marginBottom: 24, outline: 'none', fontFamily: 'monospace', transition: 'border 0.2s' }}
+              onFocus={(e) => e.target.style.border = '1px solid #007aff'}
+              onBlur={(e) => e.target.style.border = '1px solid #333'}
             />
 
             {/* Hidden Badge for PDF Capture */}
@@ -87,70 +101,89 @@ export default function BadgeGenerator({ onClose }: { onClose: () => void }) {
               <div 
                 ref={badgeRef} 
                 style={{ 
-                  width: '400px', 
+                  width: '420px', 
                   height: '600px', 
                   background: '#0a0a0a', 
-                  border: '4px solid #00ffff', 
+                  border: '2px solid #222', 
                   borderRadius: '16px', 
-                  padding: '32px',
+                  padding: '40px',
                   display: 'flex',
                   flexDirection: 'column',
                   alignItems: 'center',
-                  fontFamily: 'monospace',
+                  fontFamily: 'sans-serif',
                   position: 'relative',
-                  overflow: 'hidden'
+                  overflow: 'hidden',
+                  boxSizing: 'border-box'
                 }}
               >
-                <div style={{ position: 'absolute', top: -50, right: -50, width: 200, height: 200, background: '#00ffff', filter: 'blur(100px)', opacity: 0.2 }}></div>
+                {/* CyberPhoenix Logo */}
+                <img src="/assets/logo.png" alt="CyberPhoenix" style={{ height: '70px', objectFit: 'contain', marginBottom: '16px', opacity: 0.9 }} />
                 
-                <h1 style={{ color: '#00ffff', fontSize: '24px', letterSpacing: '4px', fontWeight: 900, marginBottom: '8px', textAlign: 'center' }}>CYBERPHOENIX</h1>
-                <h2 style={{ color: '#fff', fontSize: '14px', letterSpacing: '8px', marginBottom: '40px', opacity: 0.8 }}>CLUB</h2>
+                <h1 style={{ color: '#fff', fontSize: '22px', letterSpacing: '4px', fontWeight: 900, marginBottom: '32px', textAlign: 'center', fontFamily: 'monospace' }}>CYBERPHOENIX</h1>
 
+                {/* Avatar Initial block */}
                 <div style={{ 
                   width: '150px', 
                   height: '150px', 
                   background: '#111', 
-                  border: '2px solid #00ffff', 
-                  borderRadius: '12px', 
+                  border: '1px solid #333', 
+                  borderRadius: '24px', 
                   display: 'flex', 
                   alignItems: 'center', 
                   justifyContent: 'center',
-                  fontSize: '64px',
+                  fontSize: '56px',
                   fontWeight: 900,
-                  color: '#00ffff',
-                  textShadow: '0 0 20px rgba(0,255,255,0.5)',
-                  marginBottom: '40px',
+                  color: '#fff',
+                  marginBottom: '32px',
                   position: 'relative'
                 }}>
                   {getInitials(name)}
-                  <div style={{ position: 'absolute', bottom: -10, right: -10, background: '#00ffff', color: '#000', fontSize: '10px', padding: '2px 6px', fontWeight: 'bold' }}>VERIFIED</div>
-                </div>
-
-                <div style={{ width: '100%', textAlign: 'left', marginBottom: '20px' }}>
-                  <div style={{ color: '#666', fontSize: '10px', letterSpacing: '2px', marginBottom: '4px' }}>OPERATIVE ALIAS</div>
-                  <div style={{ color: '#fff', fontSize: '24px', fontWeight: 700, letterSpacing: '2px', textTransform: 'uppercase' }}>{name || "UNKNOWN"}</div>
-                </div>
-
-                <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', marginBottom: '20px' }}>
-                  <div>
-                    <div style={{ color: '#666', fontSize: '10px', letterSpacing: '2px', marginBottom: '4px' }}>RANK</div>
-                    <div style={{ color: '#00ffff', fontSize: '16px', fontWeight: 700, letterSpacing: '1px' }}>{QUEST_CONFIG.lore.badgeRank}</div>
+                  {/* Verified Icon - Fixed Shape */}
+                  <div style={{ 
+                    position: 'absolute', 
+                    bottom: -10, 
+                    right: -10, 
+                    background: '#0a0a0a', 
+                    borderRadius: '50%', 
+                    width: '36px', 
+                    height: '36px', 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    justifyContent: 'center',
+                    border: '2px solid #007aff'
+                  }}>
+                    <BadgeCheck size={22} color="#007aff" fill="#000" />
                   </div>
-                  <div style={{ textAlign: 'right' }}>
-                    <div style={{ color: '#666', fontSize: '10px', letterSpacing: '2px', marginBottom: '4px' }}>CLEARANCE</div>
-                    <div style={{ color: '#fff', fontSize: '16px', fontWeight: 700, letterSpacing: '1px' }}>LEVEL 9</div>
+                </div>
+
+                {/* Name */}
+                <div style={{ width: '100%', textAlign: 'center', marginBottom: '32px', borderBottom: '1px solid #222', paddingBottom: '24px' }}>
+                  <div style={{ color: '#888', fontSize: '11px', letterSpacing: '2px', marginBottom: '8px', fontFamily: 'monospace' }}>OPERATIVE ALIAS</div>
+                  <div style={{ color: '#fff', fontSize: '28px', fontWeight: 900, letterSpacing: '2px', textTransform: 'uppercase' }}>{name || "UNKNOWN"}</div>
+                </div>
+
+                {/* Rank and Clearance */}
+                <div style={{ width: '100%', display: 'flex', justifyContent: 'space-around', marginBottom: 'auto' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                    <div style={{ color: '#888', fontSize: '11px', letterSpacing: '2px', marginBottom: '6px', fontFamily: 'monospace' }}>RANK</div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <ShieldAlert size={18} color="#007aff" />
+                      <span style={{ color: '#fff', fontSize: '16px', fontWeight: 800, letterSpacing: '1px' }}>{QUEST_CONFIG.lore.badgeRank}</span>
+                    </div>
+                  </div>
+                  
+                  <div style={{ width: '1px', background: '#333' }}></div>
+
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                    <div style={{ color: '#888', fontSize: '11px', letterSpacing: '2px', marginBottom: '6px', fontFamily: 'monospace' }}>CLEARANCE</div>
+                    <div style={{ color: '#007aff', fontSize: '16px', fontWeight: 800, letterSpacing: '1px' }}>LEVEL 9</div>
                   </div>
                 </div>
 
-                <div style={{ width: '100%', height: '1px', background: '#333', margin: '20px 0' }}></div>
-
-                <div style={{ width: '100%', display: 'flex', alignItems: 'center', gap: '8px', color: '#a5d6a7', fontSize: '12px', letterSpacing: '1px' }}>
-                  <MapPin size={14} />
-                  LOCATION: {QUEST_CONFIG.lore.badgeLocation}
-                </div>
-                
-                <div style={{ marginTop: 'auto', width: '100%', display: 'flex', justifyContent: 'center' }}>
-                  <div style={{ fontFamily: 'monospace', fontSize: '32px', letterSpacing: '4px', opacity: 0.5 }}>|||| | ||| || ||</div>
+                {/* Location Footer */}
+                <div style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', color: '#666', fontSize: '11px', letterSpacing: '1px', fontFamily: 'monospace', marginTop: '32px' }}>
+                  <MapPin size={14} color="#007aff" />
+                  VERIFIED LOCATION: {QUEST_CONFIG.lore.badgeLocation}
                 </div>
               </div>
             </div>
@@ -161,26 +194,27 @@ export default function BadgeGenerator({ onClose }: { onClose: () => void }) {
               style={{ 
                 width: '100%', 
                 padding: '16px', 
-                background: name.trim() ? '#00ffff' : '#333', 
-                color: name.trim() ? '#000' : '#888', 
+                background: name.trim() ? '#fff' : '#222', 
+                color: name.trim() ? '#000' : '#666', 
                 border: 'none', 
                 borderRadius: 8, 
-                fontSize: '16px', 
-                fontWeight: 900, 
-                letterSpacing: 2, 
+                fontSize: '14px', 
+                fontWeight: 800, 
+                letterSpacing: 1, 
                 cursor: name.trim() && !isGenerating ? 'pointer' : 'not-allowed',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                gap: 12,
-                transition: 'all 0.2s'
+                gap: 8,
+                transition: 'all 0.2s',
+                textTransform: 'uppercase'
               }}
             >
               {isGenerating ? (
-                "ENCRYPTING PDF..."
+                "GENERATING SECURE PDF..."
               ) : (
                 <>
-                  <Download size={20} />
+                  <Download size={18} />
                   DOWNLOAD ID CARD
                 </>
               )}
@@ -188,6 +222,7 @@ export default function BadgeGenerator({ onClose }: { onClose: () => void }) {
           </div>
         </div>
       )}
-    </div>
+      </div>
+    </AppContainer>
   );
 }
