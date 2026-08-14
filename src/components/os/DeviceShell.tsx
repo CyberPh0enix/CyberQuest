@@ -7,12 +7,14 @@ import HomeIndicator from "@/components/ui/HomeIndicator";
 import styles from "./DeviceShell.module.css";
 import { Loader2 } from "lucide-react";
 
+import LockScreen from "./LockScreen";
+
 // internal router to switch between OS states and Apps
 function OSRouter() {
   const { systemState, activeApp } = useOS();
 
   if (systemState === "locked") {
-    return <div style={{ padding: "60px 20px" }}>Swipe up to unlock (LockScreen Stub)</div>;
+    return <LockScreen />;
   }
 
   if (activeApp) {

@@ -9,11 +9,16 @@ export const ENCRYPTED_ANSWERS = {
   network: {
     rogueMac: "MDA6MUE6MkI6M0M6NEQ6NUU=" // "00:1A:2B:3C:4D:5E"
   },
-  lockPatternHash: "2,1,0,3,4,5,8,7,6"
+  lockPatternHash: "1,4,9,14,15,11,6,2" // Complex 4x4 Zigzag Hook
 };
 
 export const HINTS_REGISTRY = {
-  h1: "System Admin: Did you forget the passcode again? I told you not to trace an 'S' shape with your greasy fingers...",
-  h2: "Look at Alex's recent posts. When did he get that dog?",
-  h3: "Network anomaly detected. Look for the MAC address consuming abnormal bandwidth."
+  // Indirect hint for the UV Smudge Attack
+  h1: "Mom: I told you a hundred times to stop eating those oily potato chips while using your phone! You're leaving disgusting grease marks all over the glass!",
+  
+  // Indirect hint for the OSINT Instagram puzzle
+  h2: "People use the most predictable passwords. Usually it's something they obsess over online—a pet's name, a significant year... You know, the kind of thing you'd post on a timeline when they first joined the family.",
+  
+  // Indirect hint for the Network puzzle
+  h3: "Syslog Alert: We're seeing heavy packet loss on the internal bridge. Some rogue hardware is absolutely hogging the gateway's bandwidth. If we could just identify its physical address, we could drop its traffic entirely."
 };

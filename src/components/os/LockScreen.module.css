@@ -1,0 +1,294 @@
+.lockScreenWrapper {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  /* Pure CSS mesh gradient wallpaper, highly elegant and robust */
+  background: 
+    radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), 
+    radial-gradient(at 50% 0%, hsla(225,39%,30%,1) 0, transparent 50%), 
+    radial-gradient(at 100% 0%, hsla(339,49%,30%,1) 0, transparent 50%),
+    radial-gradient(at 100% 100%, hsla(245,59%,20%,1) 0, transparent 50%),
+    radial-gradient(at 0% 100%, hsla(245,69%,15%,1) 0, transparent 50%);
+  background-color: hsla(245,49%,5%,1);
+  overflow: hidden;
+  color: var(--text-strong);
+  display: flex;
+  flex-direction: column;
+}
+
+.wallpaperLayer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 60px;
+  transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1), filter 0.4s ease;
+  z-index: 10;
+}
+
+.wallpaperLayer.shifted {
+  transform: translateY(-100%);
+  filter: blur(10px) brightness(0.5);
+  pointer-events: none;
+}
+
+.lockIcon {
+  margin-bottom: 8px;
+}
+
+.clock {
+  font-size: 86px;
+  font-weight: 700; /* iOS bold clock */
+  letter-spacing: -2px;
+  line-height: 1;
+  text-shadow: 0 4px 15px rgba(0,0,0,0.4);
+}
+
+.date {
+  font-size: 20px;
+  font-weight: 600;
+  margin-top: 4px;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.4);
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.emptyNotifs {
+  margin-top: 40px;
+  font-size: 15px;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+/* --- Notification Layer --- */
+.notificationLayer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  z-index: 40;
+  transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.4s ease;
+  transform: translateY(-100%);
+  opacity: 0;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 100px;
+}
+
+.notificationLayer.active {
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.notifications {
+  width: 90%;
+  max-width: 340px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.notification {
+  background: rgba(20, 20, 20, 0.5);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  padding: 16px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.notifHeader {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  color: rgba(255,255,255,0.7);
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+.notifBody {
+  font-size: 15px;
+  line-height: 1.4;
+}
+
+.swipeHint {
+  position: absolute;
+  bottom: 40px;
+  font-weight: 500;
+  font-size: 15px;
+  animation: pulse 2s infinite;
+  text-shadow: 0 1px 5px rgba(0,0,0,0.5);
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.5; transform: translateY(0); }
+  50% { opacity: 1; transform: translateY(-5px); }
+}
+
+/* --- Passcode Layer --- */
+.passcodeLayer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+  transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.32, 0.72, 0, 1);
+  opacity: 0;
+  transform: translateY(20%);
+  pointer-events: none;
+  z-index: 20;
+}
+
+.passcodeLayer.active {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.passcodeTitle {
+  font-size: 22px;
+  font-weight: 600;
+  margin-bottom: 40px;
+}
+
+/* --- Control Center Layer --- */
+.controlCenterLayer {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(50px);
+  -webkit-backdrop-filter: blur(50px);
+  z-index: 50;
+  transition: transform 0.5s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.4s ease;
+  transform: translateY(-100%);
+  opacity: 0;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 60px;
+}
+
+.controlCenterLayer.active {
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.ccGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  width: 90%;
+  max-width: 320px;
+}
+
+/* 2x2 connectivity block */
+.ccBlock {
+  background: rgba(40, 40, 40, 0.6);
+  border-radius: 20px;
+  padding: 16px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+/* vertical sliders */
+.ccSliderBlock {
+  background: rgba(40, 40, 40, 0.6);
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  padding-bottom: 20px;
+  position: relative;
+  overflow: hidden;
+  gap: 12px;
+}
+
+.ccSliderFill {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  background: white;
+  z-index: 0;
+}
+
+.ccSliderIcon {
+  position: relative;
+  z-index: 1;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* standard icon buttons */
+.ccButton {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: white;
+}
+
+.ccButton:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.ccButtonActive {
+  background: #007aff; /* iOS blue */
+  color: white;
+}
+
+.ccFlexRow {
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+  margin-top: 16px;
+  width: 90%;
+  max-width: 320px;
+}
+
+.ccFlexRow .ccButton {
+  background: rgba(40, 40, 40, 0.6);
+  border-radius: 16px;
+  flex: 1;
+  aspect-ratio: 1;
+  height: auto;
+}
+
+.ccFlexRow .ccButtonActive {
+  background: white;
+  color: black;
+}
+
+.ccHint {
+  position: absolute;
+  bottom: 40px;
+  color: rgba(255,255,255,0.6);
+  font-size: 14px;
+}
