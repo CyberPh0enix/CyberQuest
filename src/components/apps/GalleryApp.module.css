@@ -8,99 +8,117 @@
 }
 
 .header {
-  height: 60px;
-  display: flex;
-  align-items: center;
-  padding: 0 16px;
-  font-family: var(--font-sans);
-  font-size: 32px;
-  font-weight: 700;
-  border-bottom: 1px solid #dbdbdb;
+  padding: 16px;
+  background: white;
+  border-bottom: 1px solid rgba(0,0,0,0.1);
 }
 
-.grid {
+.header h2 {
+  font-size: 32px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.photoGrid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 2px;
-  flex: 1;
   overflow-y: auto;
-  align-content: flex-start;
+  flex: 1;
 }
 
 .gridItem {
   aspect-ratio: 1;
+  background: #f0f0f0;
   cursor: pointer;
-  position: relative;
   overflow: hidden;
 }
 
-.puzzleThumb {
+.gridItem img {
   width: 100%;
   height: 100%;
-  background: #e5e5e5;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  color: black;
-  font-family: monospace;
+  object-fit: cover;
+  transition: transform 0.2s;
 }
 
-.fakeBarcode {
-  font-size: 10px;
-  letter-spacing: 2px;
-  font-weight: 900;
+.gridItem:active img {
+  transform: scale(0.95);
 }
 
-.fakeText {
-  font-size: 8px;
-  margin-top: 4px;
-}
-
-.fullView {
+.fullscreenViewer {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   background: black;
-  color: white;
+  z-index: 100;
   display: flex;
   flex-direction: column;
+  animation: fadeIn 0.2s ease;
 }
 
-.fullHeader {
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.viewerHeader {
   height: 60px;
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  padding: 0 8px;
-}
-
-.backBtn {
-  background: none;
-  border: none;
-  color: #007aff;
-  display: flex;
   align-items: center;
-  font-size: 17px;
-  cursor: pointer;
+  padding: 0 8px;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(10px);
 }
 
-.fullContent {
+.viewerTitle {
+  color: white;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.viewerBody {
   flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  position: relative;
 }
 
-.placeholderImg {
+.fullImage {
   width: 100%;
   height: 100%;
+  object-fit: contain;
+}
+
+.viewerFooter {
+  height: 60px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 32px;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(10px);
+}
+
+.iconBtn {
+  background: none;
+  border: none;
   display: flex;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
+  padding: 8px;
 }
 
-.routerStickerContainer {
+.iconBtn:active {
+  opacity: 0.5;
+}
+
+.stickerContainer {
   width: 100%;
   height: 100%;
   display: flex;
@@ -109,52 +127,53 @@
   background: #222;
 }
 
-.routerSticker {
-  width: 90%;
-  max-width: 350px;
-  background: white;
-  color: black;
-  border-radius: 8px;
+.stickerBox {
+  background: #fff;
+  border: 2px solid #ccc;
+  border-radius: 4px;
   padding: 16px;
-  font-family: var(--font-sans);
-  box-shadow: inset 0 0 10px rgba(0,0,0,0.1), 0 10px 30px rgba(0,0,0,0.5);
-  transform: rotate(-2deg); /* makes it look like a casual photo */
+  width: 80%;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  color: black;
 }
 
-.stickerHeader {
+.stickerBrand {
+  font-weight: 900;
+  font-size: 20px;
+  color: #0055a4;
+  margin-bottom: 4px;
+}
+
+.stickerModel {
+  font-size: 11px;
+  color: #666;
+  margin-bottom: 12px;
+}
+
+.stickerDivider {
+  height: 1px;
+  background: #ccc;
+  margin: 8px 0;
+}
+
+.stickerInfo {
   display: flex;
   justify-content: space-between;
-  border-bottom: 2px solid black;
-  padding-bottom: 8px;
-  margin-bottom: 8px;
-  font-size: 12px;
-}
-
-.stickerHeader span:first-child {
-  font-weight: 900;
-  color: #0055a4;
-  font-size: 16px;
+  font-size: 13px;
+  margin-bottom: 4px;
 }
 
 .stickerBarcode {
   font-family: monospace;
   font-size: 24px;
-  font-weight: 900;
-  text-align: center;
   letter-spacing: 2px;
+  text-align: center;
   margin: 12px 0;
+  color: #000;
 }
 
-.stickerBody {
-  font-size: 14px;
-  line-height: 1.4;
-  margin-bottom: 16px;
-}
-
-.stickerFooter {
-  border-top: 1px solid #ccc;
-  padding-top: 8px;
-  font-size: 12px;
-  font-family: monospace;
-  text-align: right;
+.stickerSerial {
+  font-size: 10px;
+  text-align: center;
+  color: #666;
 }

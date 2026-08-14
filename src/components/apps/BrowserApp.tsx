@@ -15,6 +15,8 @@ export default function BrowserApp() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [routerAuth, setRouterAuth] = useState(false);
+  const [routerTab, setRouterTab] = useState<"dashboard" | "logs" | "access">("dashboard");
+  const [macInput, setMacInput] = useState("");
   const [error, setError] = useState("");
 
   const isBlocked = gamePhase >= 4;
@@ -38,6 +40,17 @@ export default function BrowserApp() {
       setError("");
     } else {
       setError("Invalid username or password");
+    }
+  };
+
+  const handleBlockSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const cleanMac = macInput.toUpperCase().replace(/[^A-Z0-9]/g, "");
+    if (cleanMac === "001A2B3C4D5E") {
+      setGamePhase(4);
+      setError("");
+    } else {
+      setError("Invalid MAC Address or Device not found on bridge.");
     }
   };
 
@@ -87,42 +100,80 @@ export default function BrowserApp() {
               <Menu size={24} color="white" />
             </header>
             
-            <div className={styles.dashBody}>
-              <h3>Attached Devices</h3>
-              
-              <div className={styles.deviceList}>
-                <div className={styles.deviceRow}>
-                  <div>
-                    <strong>iPhone</strong><br/>
-                    <small>192.168.0.105 | AA:BB:CC:DD:EE:FF</small>
-                  </div>
-                  <span className={styles.statusOnline}>Online</span>
-                </div>
-                
-                <div className={styles.deviceRow}>
-                  <div>
-                    <strong>UNKNOWN_ROGUE</strong><br/>
-                    <small>192.168.0.99 | 00:1A:2B:3C:4D:5E</small><br/>
-                    {!isBlocked && <span className={styles.bandwidthWarning}>Bandwidth Usage: 99% (Hogging)</span>}
-                  </div>
-                  {isBlocked ? (
-                    <span className={styles.statusBlocked}>Blocked</span>
-                  ) : (
-                    <button className={styles.blockBtn} onClick={handleBlockDevice}>
-                      Block Device
-                    </button>
-                  )}
-                </div>
-              </div>
+            <div className={styles.routerNav}>
+              <button className={routerTab === "dashboard" ? styles.navActive : ""} onClick={() => setRouterTab("dashboard")}>Dashboard</button>
+              <button className={routerTab === "logs" ? styles.navActive : ""} onClick={() => setRouterTab("logs")}>System Logs</button>
+              <button className={routerTab === "access" ? styles.navActive : ""} onClick={() => setRouterTab("access")}>Access Control</button>
+            </div>
 
-              {isBlocked && (
-                <div className={styles.successBanner}>
-                  <ShieldCheck size={48} color="#2e7d32" style={{ marginBottom: 16 }} />
-                  <h3>Network Secured</h3>
-                  <p style={{ marginTop: 8 }}>Rogue connection dropped. Phase 4 Complete.</p>
-                  <button className={styles.rewardBtn} onClick={() => alert("GENERATING BADGE (TODO)")}>
-                    Claim Operative Badge
-                  </button>
+            <div className={styles.dashBody}>
+              {routerTab === "dashboard" && (
+                <>
+                  <h3>Attached Devices</h3>
+                  <div className={styles.deviceList}>
+                    <div className={styles.deviceRow}>
+                      <div>
+                        <strong>iPhone (Your Device)</strong><br/>
+                        <small>IP: 192.168.0.105</small>
+                      </div>
+                      <span className={styles.statusOnline}>Online</span>
+                    </div>
+                    
+                    <div className={styles.deviceRow}>
+                      <div>
+                        <strong>UNKNOWN_ROGUE</strong><br/>
+                        <small>IP: 192.168.0.99</small><br/>
+                        {!isBlocked && <span className={styles.bandwidthWarning}>Bandwidth Usage: 99% (Hogging)</span>}
+                      </div>
+                      {isBlocked ? (
+                        <span className={styles.statusBlocked}>Blocked</span>
+                      ) : (
+                        <span className={styles.statusOnline}>Online</span>
+                      )}
+                    </div>
+                  </div>
+                </>
+              )}
+
+              {routerTab === "logs" && (
+                <div className={styles.sysLogs}>
+                  <div className={styles.logLine}>[INFO] System initialized. NAT active.</div>
+                  <div className={styles.logLine}>[INFO] DHCP ACK 192.168.0.105 (iPhone)</div>
+                  <div className={styles.logLine}>[WARN] Unusual traffic volume detected on port 443</div>
+                  <div className={styles.logLine}>[WARN] Bridge dropped 500 packets (Congestion)</div>
+                  <div className={styles.logLine} style={{ color: '#ff3b30' }}>[CRITICAL] 192.168.0.99 is consuming 99% of total bandwidth!</div>
+                  <div className={styles.logLine}>[INFO] DHCP ACK 192.168.0.99 MAC: 00:1A:2B:3C:4D:5E</div>
+                  <div className={styles.logLine}>[INFO] NTP Synchronization complete.</div>
+                  <div className={styles.logLine}>[INFO] Admin login from 192.168.0.105</div>
+                </div>
+              )}
+
+              {routerTab === "access" && (
+                <div className={styles.accessControl}>
+                  <h3>Blacklist Devices</h3>
+                  <p>Enter the physical MAC address of the device you wish to drop from the network. Format: XX:XX:XX:XX:XX:XX</p>
+                  
+                  {isBlocked ? (
+                    <div className={styles.successBanner}>
+                      <ShieldCheck size={48} color="#2e7d32" style={{ marginBottom: 16 }} />
+                      <h3>Network Secured</h3>
+                      <p style={{ marginTop: 8 }}>Rogue connection dropped. Phase 4 Complete.</p>
+                      <button className={styles.rewardBtn} onClick={() => alert("GENERATING BADGE (TODO)")}>
+                        Claim Operative Badge
+                      </button>
+                    </div>
+                  ) : (
+                    <form className={styles.blockForm} onSubmit={handleBlockSubmit}>
+                      <input 
+                        type="text" 
+                        placeholder="00:00:00:00:00:00" 
+                        value={macInput}
+                        onChange={(e) => setMacInput(e.target.value)}
+                      />
+                      <button type="submit">Blacklist MAC Address</button>
+                      {error && <div className={styles.error} style={{ marginTop: 12 }}>{error}</div>}
+                    </form>
+                  )}
                 </div>
               )}
             </div>

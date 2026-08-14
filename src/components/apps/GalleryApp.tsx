@@ -3,92 +3,86 @@
 import { useState } from "react";
 import styles from "./GalleryApp.module.css";
 import AppContainer from "../os/AppContainer";
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft, Share, Heart, Trash2 } from "lucide-react";
+
+const PHOTOS = [
+  { id: 1, type: "album", src: "https://images.unsplash.com/photo-1541364983171-a8ba01e95cfc?auto=format&fit=crop&q=80&w=400", title: "Doggo" },
+  { id: 2, type: "album", src: "https://images.unsplash.com/photo-1517849845537-4d257902454a?auto=format&fit=crop&q=80&w=400", title: "Buster" },
+  { id: 3, type: "album", src: "https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&q=80&w=400", title: "Park" },
+  { id: 4, type: "puzzle", src: "", title: "Important" },
+  { id: 5, type: "album", src: "https://images.unsplash.com/photo-1583337130417-3346a1be7dee?auto=format&fit=crop&q=80&w=400", title: "Sleepy" },
+  { id: 6, type: "album", src: "https://images.unsplash.com/photo-1505628346881-b72b27e84530?auto=format&fit=crop&q=80&w=400", title: "Walk" },
+];
 
 export default function GalleryApp() {
-  const [selectedImg, setSelectedImg] = useState<string | null>(null);
-
-  // Array of dummy images + 1 special puzzle image
-  const images = [
-    { id: "1", type: "img", src: "/puppy.png" },
-    { id: "2", type: "img", src: "/logo.png" },
-    { id: "3", type: "puzzle" },
-    { id: "4", type: "color", color: "#e1e1e1" },
-    { id: "5", type: "color", color: "#d1d1d1" },
-    { id: "6", type: "color", color: "#c1c1c1" },
-  ];
+  const [activePhoto, setActivePhoto] = useState<typeof PHOTOS[0] | null>(null);
 
   return (
     <AppContainer appId="gallery" appName="Photos">
       <div className={styles.appWrapper}>
+        <div className={styles.header}>
+          <h2>Photos</h2>
+        </div>
         
-        {selectedImg ? (
-          <div className={styles.fullView}>
-            <div className={styles.fullHeader}>
-              <button className={styles.backBtn} onClick={() => setSelectedImg(null)}>
-                <ChevronLeft size={28} />
-                <span>Albums</span>
+        <div className={styles.photoGrid}>
+          {PHOTOS.map((photo) => (
+            <div 
+              key={photo.id} 
+              className={styles.gridItem}
+              onClick={() => setActivePhoto(photo)}
+            >
+              {photo.type === "puzzle" ? (
+                <div style={{ width: '100%', height: '100%', background: '#333', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 10 }}>
+                  DOCUMENT
+                </div>
+              ) : (
+                <img src={photo.src} alt={photo.title} loading="lazy" />
+              )}
+            </div>
+          ))}
+        </div>
+
+        {activePhoto && (
+          <div className={styles.fullscreenViewer}>
+            <div className={styles.viewerHeader}>
+              <button className={styles.iconBtn} onClick={() => setActivePhoto(null)}>
+                <ChevronLeft size={28} color="#007aff" />
               </button>
-              <div style={{ width: 60 }}></div>
+              <span className={styles.viewerTitle}>{activePhoto.title}</span>
+              <div style={{ width: 44 }}></div>
             </div>
             
-            <div className={styles.fullContent}>
-              {selectedImg === "puzzle" ? (
-                <div className={styles.routerStickerContainer}>
-                  <div className={styles.routerSticker}>
-                    <div className={styles.stickerHeader}>
-                      <span>NETGEAR</span>
-                      <span>N600 Wireless Dual Band Router</span>
+            <div className={styles.viewerBody}>
+              {activePhoto.type === "puzzle" ? (
+                <div className={styles.stickerContainer}>
+                  <div className={styles.stickerBox}>
+                    <div className={styles.stickerBrand}>NETGEAR</div>
+                    <div className={styles.stickerModel}>Nighthawk AC1900 Smart WiFi Router</div>
+                    <div className={styles.stickerDivider}></div>
+                    <div className={styles.stickerInfo}>
+                      <span><strong>Router Login</strong></span>
+                      <span>http://192.168.0.1</span>
                     </div>
-                    <div className={styles.stickerBarcode}>|| |||| | ||||| |||| || |</div>
-                    <div className={styles.stickerBody}>
-                      <p><strong>Router Login</strong></p>
-                      <p>URL: http://192.168.0.1</p>
-                      <p>User: admin</p>
-                      <p>Password: password</p>
-                      <div style={{ height: 16 }}></div>
-                      <p><strong>Wireless Network (2.4GHz)</strong></p>
-                      <p>SSID: NETGEAR_24</p>
-                      <p>Pass: cipherX</p>
+                    <div className={styles.stickerInfo}>
+                      <span><strong>admin</strong></span>
+                      <span><strong>cipherX</strong></span>
                     </div>
-                    <div className={styles.stickerFooter}>
-                      MAC: 00:1A:2B:3C:4D:5E
-                    </div>
+                    <div className={styles.stickerDivider}></div>
+                    <div className={styles.stickerBarcode}>|| |||| | |||||| || | || ||||</div>
+                    <div className={styles.stickerSerial}>S/N: 4N81938T0012C</div>
                   </div>
                 </div>
               ) : (
-                <div className={styles.placeholderImg}>
-                  {images.find(i => i.id === selectedImg)?.src && (
-                     <img src={images.find(i => i.id === selectedImg)?.src} style={{width:'100%', height:'100%', objectFit: 'contain'}} />
-                  )}
-                </div>
+                <img src={activePhoto.src} alt={activePhoto.title} className={styles.fullImage} />
               )}
             </div>
+
+            <div className={styles.viewerFooter}>
+              <button className={styles.iconBtn}><Share size={24} color="#007aff" /></button>
+              <button className={styles.iconBtn}><Heart size={24} color="#007aff" /></button>
+              <button className={styles.iconBtn}><Trash2 size={24} color="#007aff" /></button>
+            </div>
           </div>
-        ) : (
-          <>
-            <div className={styles.header}>
-              <span>Albums</span>
-            </div>
-            <div className={styles.grid}>
-              {images.map(img => (
-                <div 
-                  key={img.id} 
-                  className={styles.gridItem}
-                  onClick={() => setSelectedImg(img.id === "3" ? "puzzle" : img.id)}
-                  style={{ background: img.color || '#333' }}
-                >
-                  {img.type === "puzzle" && (
-                    <div className={styles.puzzleThumb}>
-                      <div className={styles.fakeBarcode}>||| | ||</div>
-                      <div className={styles.fakeText}>admin</div>
-                    </div>
-                  )}
-                  {img.src && <img src={img.src} style={{width: '100%', height: '100%', objectFit: 'cover'}} />}
-                </div>
-              ))}
-            </div>
-          </>
         )}
       </div>
     </AppContainer>
