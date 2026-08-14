@@ -26,7 +26,8 @@ const DOCK_APPS = [
 ];
 
 export default function Desktop() {
-  const { setActiveApp, setAppOrigin } = useOS();
+  const { setActiveApp, setAppOrigin, notifications } = useOS();
+  const unreadCount = notifications.filter(n => !n.isRead).length;
 
   const handleAppClick = (e: React.MouseEvent, appId: string) => {
     const iconRect = e.currentTarget.getBoundingClientRect();
@@ -71,7 +72,13 @@ export default function Desktop() {
             key={app.id} 
             className={styles.appWrapper}
             onClick={(e) => handleAppClick(e, app.id)}
+            style={{ position: 'relative' }}
           >
+            {app.id === "messages" && unreadCount > 0 && (
+              <div style={{ position: 'absolute', top: -5, right: -5, background: '#ff3b30', color: 'white', borderRadius: '10px', padding: '2px 6px', fontSize: 12, fontWeight: 'bold', zIndex: 10, border: '2px solid rgba(255,255,255,0.2)' }}>
+                {unreadCount}
+              </div>
+            )}
             <div className={styles.appIcon}>
               <app.Icon size={32} strokeWidth={1.5} color={app.color} />
             </div>

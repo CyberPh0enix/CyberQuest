@@ -14,7 +14,8 @@ export default function GlobalOverlays() {
   const { 
     uvModeEnabled, setUvModeEnabled, 
     showControlCenter, setShowControlCenter, 
-    showNotifications, setShowNotifications 
+    showNotifications, setShowNotifications,
+    notifications, markNotificationsRead
   } = useOS();
   
   // Dummy CC states
@@ -56,6 +57,7 @@ export default function GlobalOverlays() {
     // Swipe DOWN from top-left (Notifications)
     if (distanceY < -50 && !showNotifications && startX <= window.innerWidth / 2) {
       setShowNotifications(true);
+      markNotificationsRead();
     }
     // Swipe UP to close
     if (distanceY > 50) {
@@ -79,6 +81,7 @@ export default function GlobalOverlays() {
     if (clickX < rect.width / 2) {
       setShowNotifications(!showNotifications);
       setShowControlCenter(false);
+      if (!showNotifications) markNotificationsRead();
     } else {
       setShowControlCenter(!showControlCenter);
       setShowNotifications(false);
@@ -101,24 +104,21 @@ export default function GlobalOverlays() {
       {/* View 1.5: Swipe down Notification Center */}
       <div className={`${styles.notificationLayer} ${showNotifications ? styles.active : ""}`}>
         <div className={styles.notifications}>
-          <div className={styles.notification}>
-            <div className={styles.notifHeader}>
-              <span>MESSAGES</span>
-              <span>now</span>
+          {notifications.length === 0 ? (
+             <div style={{ color: 'rgba(255,255,255,0.5)', textAlign: 'center', marginTop: 40, fontSize: 14 }}>
+               No older notifications
+             </div>
+          ) : notifications.map(n => (
+            <div key={n.id} className={styles.notification}>
+              <div className={styles.notifHeader}>
+                <span>{n.sender.toUpperCase()}</span>
+                <span>{n.time}</span>
+              </div>
+              <div className={styles.notifBody}>
+                {n.text}
+              </div>
             </div>
-            <div className={styles.notifBody}>
-              {HINTS_REGISTRY.h2}
-            </div>
-          </div>
-          <div className={styles.notification}>
-            <div className={styles.notifHeader}>
-              <span>MESSAGES</span>
-              <span>1h ago</span>
-            </div>
-            <div className={styles.notifBody}>
-              {HINTS_REGISTRY.h1}
-            </div>
-          </div>
+          ))}
         </div>
         <div className={styles.ccHint}>Swipe up to close</div>
       </div>

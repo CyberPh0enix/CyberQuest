@@ -13,7 +13,9 @@ import InstaApp from "@/components/apps/InstaApp";
 import GalleryApp from "@/components/apps/GalleryApp";
 import SettingsApp from "@/components/apps/SettingsApp";
 import BrowserApp from "@/components/apps/BrowserApp";
+import MessagesApp from "@/components/apps/MessagesApp";
 import AppContainer from "./AppContainer";
+import GameDirector from "./GameDirector";
 
 // internal router to switch between OS states and Apps
 function OSRouter() {
@@ -31,9 +33,10 @@ function OSRouter() {
       {activeApp === "gallery" && <GalleryApp />}
       {activeApp === "settings" && <SettingsApp />}
       {activeApp === "browser" && <BrowserApp />}
+      {activeApp === "messages" && <MessagesApp />}
       
       {/* Elegant Stub for unimplemented apps */}
-      {activeApp && !["insta", "gallery", "settings", "browser"].includes(activeApp) && (
+      {activeApp && !["insta", "gallery", "settings", "browser", "messages"].includes(activeApp) && (
         <AppContainer appId={activeApp} appName={activeApp.charAt(0).toUpperCase() + activeApp.slice(1)}>
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', color: 'var(--text-dim)' }}>
             <Settings2 size={64} style={{ marginBottom: 16, opacity: 0.5 }} />
@@ -66,6 +69,7 @@ interface DeviceShellProps {
 export default function DeviceShell({ children }: DeviceShellProps) {
   return (
     <OSProvider>
+      <GameDirector />
       <div className={styles.workspace}>
         <div className={styles.deviceFrame}>
           <div className={styles.screen} data-screen="true">

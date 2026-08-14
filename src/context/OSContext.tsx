@@ -3,10 +3,24 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 
 export type SystemState = "locked" | "unlocked";
+export type GamePhase = 0 | 1 | 2 | 3 | 4;
+
+export interface NotificationMessage {
+  id: string;
+  sender: string;
+  text: string;
+  time: string;
+  isRead: boolean;
+}
 
 interface OSContextType {
   systemState: SystemState;
   setSystemState: (state: SystemState) => void;
+  gamePhase: GamePhase;
+  setGamePhase: (phase: GamePhase) => void;
+  notifications: NotificationMessage[];
+  addNotification: (notif: Omit<NotificationMessage, 'id' | 'isRead'>) => void;
+  markNotificationsRead: () => void;
   activeApp: string | null;
   setActiveApp: (appId: string | null) => void;
   isHydrated: boolean;
@@ -26,6 +40,8 @@ const OSContext = createContext<OSContextType | null>(null);
 
 export function OSProvider({ children }: { children: ReactNode }) {
   const [systemState, setSystemStateInternal] = useState<SystemState>("locked");
+  const [gamePhase, setGamePhaseInternal] = useState<GamePhase>(0);
+  const [notifications, setNotifications] = useState<NotificationMessage[]>([]);
   const [activeApp, setActiveAppInternal] = useState<string | null>(null);
   const [isHydrated, setIsHydrated] = useState(false);
   const [uvModeEnabled, setUvModeEnabled] = useState(false);
@@ -38,8 +54,13 @@ export function OSProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     try {
       const savedSys = localStorage.getItem("cq_sys_state") as SystemState;
+      const savedPhase = localStorage.getItem("cq_game_phase");
+      const savedNotifs = localStorage.getItem("cq_notifications");
       const savedApp = localStorage.getItem("cq_active_app");
+      
       if (savedSys) setSystemStateInternal(savedSys);
+      if (savedPhase) setGamePhaseInternal(parseInt(savedPhase) as GamePhase);
+      if (savedNotifs) setNotifications(JSON.parse(savedNotifs));
       if (savedApp && savedApp !== "null") setActiveAppInternal(savedApp);
     } catch (e) {
       console.warn("Storage restricted.");
@@ -50,7 +71,38 @@ export function OSProvider({ children }: { children: ReactNode }) {
 
   const setSystemState = (state: SystemState) => {
     setSystemStateInternal(state);
+    if (state === "unlocked" && gamePhase === 0) setGamePhase(1);
     try { localStorage.setItem("cq_sys_state", state); } catch (e) {}
+  };
+
+  const setGamePhase = (phase: GamePhase) => {
+    setGamePhaseInternal(phase);
+    try { localStorage.setItem("cq_game_phase", phase.toString()); } catch (e) {}
+  };
+
+  const addNotification = (notif: Omit<NotificationMessage, 'id' | 'isRead'>) => {
+    setNotifications(prev => {
+      // Prevent duplicate exact messages
+      if (prev.some(n => n.text === notif.text)) return prev;
+      
+      const newNotif = { ...notif, id: Math.random().toString(36).substring(7), isRead: false };
+      const updated = [newNotif, ...prev];
+      try { localStorage.setItem("cq_notifications", JSON.stringify(updated)); } catch(e){}
+      
+      // Haptic Vibration + Audio could go here
+      if (typeof window !== "undefined" && window.navigator && window.navigator.vibrate) {
+        window.navigator.vibrate([200, 100, 200]);
+      }
+      return updated;
+    });
+  };
+
+  const markNotificationsRead = () => {
+    setNotifications(prev => {
+      const updated = prev.map(n => ({...n, isRead: true}));
+      try { localStorage.setItem("cq_notifications", JSON.stringify(updated)); } catch(e){}
+      return updated;
+    });
   };
 
   const setActiveApp = (appId: string | null) => {
@@ -69,6 +121,8 @@ export function OSProvider({ children }: { children: ReactNode }) {
   return (
     <OSContext.Provider value={{ 
       systemState, setSystemState, 
+      gamePhase, setGamePhase,
+      notifications, addNotification, markNotificationsRead,
       activeApp, setActiveApp, 
       isHydrated,
       uvModeEnabled, setUvModeEnabled,

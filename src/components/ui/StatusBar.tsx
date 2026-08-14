@@ -1,11 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Battery, Wifi, Signal } from "lucide-react";
+import { Battery, Wifi, Signal, Bell } from "lucide-react";
 import styles from "./StatusBar.module.css";
+import { useOS } from "@/context/OSContext";
 
 export default function StatusBar() {
   const [time, setTime] = useState<Date | null>(null);
+  const { notifications } = useOS();
+  const unreadCount = notifications.filter(n => !n.isRead).length;
 
   useEffect(() => {
     setTime(new Date()); // instantly forces a post-hydration re-render
@@ -27,6 +30,12 @@ export default function StatusBar() {
       </div>
       
       <div className={styles.icons}>
+        {unreadCount > 0 && (
+          <div style={{ position: 'relative', marginRight: 4, display: 'flex', alignItems: 'center' }}>
+            <Bell size={14} className={styles.icon} />
+            <div style={{ position: 'absolute', top: -2, right: -2, width: 6, height: 6, background: '#ff3b30', borderRadius: '50%' }}></div>
+          </div>
+        )}
         <Signal size={14} className={styles.icon} />
         <Wifi size={14} className={styles.icon} />
         <Battery size={16} className={styles.icon} />
