@@ -5,14 +5,14 @@ import { useOS } from "@/context/OSContext";
 import { 
   Instagram, MessageSquare, Phone, Globe, 
   Music, Map, Settings, Calendar, 
-  FolderLock
+  Image
 } from "lucide-react";
 import { HINTS_REGISTRY } from "@/data/puzzles";
 
 // We'll use lucide-react icons for fake apps
 const APPS = [
   { id: "insta", name: "Instagram", Icon: Instagram, color: "#e1306c" },
-  { id: "vault", name: "Secure Vault", Icon: FolderLock, color: "#34c759" },
+  { id: "gallery", name: "Photos", Icon: Image, color: "#007aff" },
   { id: "settings", name: "Settings", Icon: Settings, color: "#8e8e93" },
   { id: "maps", name: "Maps", Icon: Map, color: "#34a853" },
   { id: "calendar", name: "Calendar", Icon: Calendar, color: "#ff3b30" }
@@ -21,7 +21,7 @@ const APPS = [
 const DOCK_APPS = [
   { id: "phone", name: "Phone", Icon: Phone, color: "#34c759" },
   { id: "messages", name: "Messages", Icon: MessageSquare, color: "#34c759" },
-  { id: "safari", name: "Browser", Icon: Globe, color: "#007aff" },
+  { id: "browser", name: "Browser", Icon: Globe, color: "#007aff" },
   { id: "music", name: "Music", Icon: Music, color: "#ff2d55" }
 ];
 

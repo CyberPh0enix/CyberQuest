@@ -10,7 +10,9 @@ import { Loader2, Settings2 } from "lucide-react";
 import LockScreen from "./LockScreen";
 import Desktop from "./Desktop";
 import InstaApp from "@/components/apps/InstaApp";
-import VaultApp from "@/components/apps/VaultApp";
+import GalleryApp from "@/components/apps/GalleryApp";
+import SettingsApp from "@/components/apps/SettingsApp";
+import BrowserApp from "@/components/apps/BrowserApp";
 import AppContainer from "./AppContainer";
 
 // internal router to switch between OS states and Apps
@@ -26,10 +28,12 @@ function OSRouter() {
       <Desktop />
       
       {activeApp === "insta" && <InstaApp />}
-      {activeApp === "vault" && <VaultApp />}
+      {activeApp === "gallery" && <GalleryApp />}
+      {activeApp === "settings" && <SettingsApp />}
+      {activeApp === "browser" && <BrowserApp />}
       
       {/* Elegant Stub for unimplemented apps */}
-      {activeApp && activeApp !== "insta" && activeApp !== "vault" && (
+      {activeApp && !["insta", "gallery", "settings", "browser"].includes(activeApp) && (
         <AppContainer appId={activeApp} appName={activeApp.charAt(0).toUpperCase() + activeApp.slice(1)}>
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', color: 'var(--text-dim)' }}>
             <Settings2 size={64} style={{ marginBottom: 16, opacity: 0.5 }} />

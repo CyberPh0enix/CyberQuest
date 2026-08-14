@@ -1,0 +1,249 @@
+.appWrapper {
+  width: 100%;
+  height: 100%;
+  background: white;
+  color: black;
+  display: flex;
+  flex-direction: column;
+}
+
+.browserHeader {
+  background: #f2f2f7;
+  padding: 8px 16px;
+  border-bottom: 1px solid rgba(0,0,0,0.1);
+}
+
+.urlBar {
+  background: white;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.aa {
+  font-family: serif;
+  font-size: 14px;
+  margin-right: 12px;
+  color: #000;
+}
+
+.urlBar input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 15px;
+  background: transparent;
+}
+
+.browserContent {
+  flex: 1;
+  overflow-y: auto;
+  position: relative;
+}
+
+.browserToolbar {
+  height: 50px;
+  background: rgba(242, 242, 247, 0.9);
+  backdrop-filter: blur(10px);
+  border-top: 1px solid rgba(0,0,0,0.1);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+}
+
+/* Fallback States */
+.notConnected {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+  text-align: center;
+  color: #6d6d72;
+}
+
+.notConnected h3 {
+  color: black;
+  margin-bottom: 8px;
+  font-size: 18px;
+}
+
+.favorites {
+  padding: 32px 24px;
+}
+
+.favorites h2 {
+  font-size: 22px;
+  margin-bottom: 24px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.icon {
+  aspect-ratio: 1;
+  background: #f2f2f7;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+}
+
+/* Router UI */
+.routerLogin {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f4f6f8;
+}
+
+.loginBox {
+  background: white;
+  padding: 32px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  width: 90%;
+  max-width: 400px;
+  text-align: center;
+}
+
+.brand {
+  font-weight: 900;
+  color: #0055a4;
+  font-size: 24px;
+  letter-spacing: 2px;
+  margin-bottom: 16px;
+}
+
+.loginBox h2 {
+  font-size: 18px;
+  color: #333;
+  margin-bottom: 24px;
+}
+
+.loginBox input {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.loginBox button {
+  width: 100%;
+  padding: 12px;
+  background: #0055a4;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 8px;
+}
+
+.error {
+  color: #ff3b30;
+  font-size: 13px;
+  margin-bottom: 12px;
+}
+
+.routerDashboard {
+  min-height: 100%;
+  background: #f4f6f8;
+}
+
+.dashHeader {
+  background: #0055a4;
+  color: white;
+  padding: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.dashHeader .brand {
+  color: white;
+  margin: 0;
+}
+
+.dashBody {
+  padding: 16px;
+}
+
+.dashBody h3 {
+  margin-bottom: 16px;
+  color: #333;
+}
+
+.deviceList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.deviceRow {
+  background: white;
+  padding: 16px;
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.bandwidthWarning {
+  color: #ff3b30;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.statusOnline {
+  color: #34c759;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.statusBlocked {
+  color: #ff3b30;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.blockBtn {
+  background: #ff3b30;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.successBanner {
+  margin-top: 24px;
+  padding: 16px;
+  background: #e8f5e9;
+  color: #2e7d32;
+  border-radius: 8px;
+  border: 1px solid #a5d6a7;
+  font-weight: 600;
+  text-align: center;
+  animation: slideIn 0.5s ease;
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}

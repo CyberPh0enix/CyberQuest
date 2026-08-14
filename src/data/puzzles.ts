@@ -20,5 +20,5 @@ export const HINTS_REGISTRY = {
   h2: "People use the most predictable passwords. Usually it's something they obsess over online—a pet's name, a significant year... You know, the kind of thing you'd post on a timeline when they first joined the family.",
   
   // Indirect hint for the Network puzzle
-  h3: "Syslog Alert: We're seeing heavy packet loss on the internal bridge. Some rogue hardware is absolutely hogging the gateway's bandwidth. If we could just identify its physical address, we could drop its traffic entirely."
+  h3: "I finally set up the new Netgear router! The login info is on a sticker on the back of the device. I took a picture of it and saved it to the photo gallery just in case we need to block anyone hogging the bandwidth."
 };
