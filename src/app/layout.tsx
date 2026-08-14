@@ -20,13 +20,19 @@ export const metadata: Metadata = {
   title: "CyberQuest | Device Investigation",
   description: "Simulated OS investigation environment.",
   robots: "noindex, nofollow",
-  viewport: "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0", // strictly prevents pinch zoom on mobile
+};
+
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en" className={`${inter.variable} ${jetbrainsMono.variable}`}>
-      <body>
+    <html lang="en" className={`${inter.variable} ${jetbrainsMono.variable}`} suppressHydrationWarning>
+      <body suppressHydrationWarning>
         <ThemeProvider>
           {children}
         </ThemeProvider>

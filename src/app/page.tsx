@@ -1,15 +1,11 @@
 "use client";
 
-import DeviceShell from "@/components/os/DeviceShell";
+import dynamic from "next/dynamic";
+
+// Force the entire OS to be strictly Client-Side Rendered (CSR), completely bypassing Next.js SSR and Hydration.
+// This perfectly mimics a standard Vite/React application like PhoenixOS.
+const DeviceShell = dynamic(() => import("@/components/os/DeviceShell"), { ssr: false });
 
 export default function Home() {
-  return (
-    <DeviceShell>
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100%" }}>
-        <p style={{ color: "var(--muted)", fontFamily: "var(--font-mono)", fontSize: "0.85rem" }}>
-          booting os environment...
-        </p>
-      </div>
-    </DeviceShell>
-  );
+  return <DeviceShell />;
 }

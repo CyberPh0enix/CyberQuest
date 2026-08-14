@@ -1,0 +1,28 @@
+.indicatorContainer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 34px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  padding-bottom: 8px;
+  z-index: 100;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.indicatorBar {
+  width: 134px;
+  height: 5px;
+  background-color: var(--text-strong);
+  border-radius: 100px;
+  opacity: 0.8;
+  transition: opacity var(--t-fast), transform var(--t-fast);
+}
+
+.indicatorContainer:active .indicatorBar {
+  opacity: 1;
+  transform: scaleY(1.2);
+}
