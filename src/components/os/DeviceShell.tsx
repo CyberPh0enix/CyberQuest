@@ -8,6 +8,9 @@ import styles from "./DeviceShell.module.css";
 import { Loader2 } from "lucide-react";
 
 import LockScreen from "./LockScreen";
+import Desktop from "./Desktop";
+import InstaApp from "@/components/apps/InstaApp";
+import VaultApp from "@/components/apps/VaultApp";
 
 // internal router to switch between OS states and Apps
 function OSRouter() {
@@ -18,15 +21,12 @@ function OSRouter() {
   }
 
   if (activeApp) {
-    return <div style={{ padding: "60px 20px" }}>App: {activeApp} (Stub)</div>;
+    if (activeApp === "insta") return <InstaApp />;
+    if (activeApp === "vault") return <VaultApp />;
+    return <div style={{ padding: "60px 20px" }}>App "{activeApp}" not implemented yet.</div>;
   }
 
-  // Home Screen
-  return (
-    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100%" }}>
-      <p>Home Screen Grid (Stub)</p>
-    </div>
-  );
+  return <Desktop />;
 }
 
 function ScreenContent() {
