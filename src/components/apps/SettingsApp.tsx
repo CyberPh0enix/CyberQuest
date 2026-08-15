@@ -3,12 +3,12 @@
 import { useState } from "react";
 import styles from "./SettingsApp.module.css";
 import AppContainer from "../os/AppContainer";
-import { ChevronRight, Wifi, Bluetooth, Plane, Info, Lock } from "lucide-react";
-import { useOS } from "@/context/OSContext";
+import { ChevronRight, Wifi, Bluetooth, Plane, Info, Lock, Square } from "lucide-react";
+import { useOS, NavStyle } from "@/context/OSContext";
 import { QUEST_CONFIG } from "@/config/quest";
 
 export default function SettingsApp() {
-  const { gamePhase, setGamePhase } = useOS();
+  const { gamePhase, setGamePhase, navStyle, setNavStyle } = useOS();
   const [view, setView] = useState<"main" | "wifi">("main");
   const [wifiPassword, setWifiPassword] = useState("");
   const [promptNetwork, setPromptNetwork] = useState<string | null>(null);
@@ -48,6 +48,7 @@ export default function SettingsApp() {
 
         <div className={styles.content}>
           {view === "main" && (
+            <>
             <div className={styles.list}>
               <div className={styles.listItem}>
                 <div className={styles.iconBox} style={{ background: '#ff9500' }}>
@@ -79,6 +80,19 @@ export default function SettingsApp() {
                 </div>
               </div>
             </div>
+
+            <div className={styles.list} style={{ marginTop: 24 }}>
+              <div className={styles.listItem} onClick={() => setNavStyle(navStyle === 'gesture' ? 'buttons' : 'gesture')}>
+                <div className={styles.iconBox} style={{ background: '#5ac8fa' }}>
+                  <Square size={18} color="white" />
+                </div>
+                <div className={styles.itemText}>3-Button Navigation</div>
+                <div className={styles.itemRight}>
+                  <div className={`${styles.toggle} ${navStyle === 'buttons' ? styles.toggleOn : ''}`}></div>
+                </div>
+              </div>
+            </div>
+            </>
           )}
 
           {view === "wifi" && (

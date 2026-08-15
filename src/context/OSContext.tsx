@@ -4,6 +4,7 @@ import { createContext, useContext, useEffect, useState, ReactNode } from "react
 
 export type SystemState = "locked" | "unlocked";
 export type GamePhase = 0 | 1 | 2 | 3 | 4;
+export type NavStyle = "gesture" | "buttons";
 
 export interface NotificationMessage {
   id: string;
@@ -34,6 +35,8 @@ interface OSContextType {
   setAppOrigin: (origin: { x: number, y: number } | null) => void;
   isClosing: boolean;
   closeApp: () => void;
+  navStyle: NavStyle;
+  setNavStyle: (style: NavStyle) => void;
 }
 
 const OSContext = createContext<OSContextType | null>(null);
@@ -50,6 +53,7 @@ export function OSProvider({ children }: { children: ReactNode }) {
   
   const [appOrigin, setAppOrigin] = useState<{ x: number, y: number } | null>(null);
   const [isClosing, setIsClosing] = useState(false);
+  const [navStyleInternal, setNavStyleInternal] = useState<NavStyle>("gesture");
 
   useEffect(() => {
     try {
@@ -57,11 +61,13 @@ export function OSProvider({ children }: { children: ReactNode }) {
       const savedPhase = localStorage.getItem("cq_game_phase");
       const savedNotifs = localStorage.getItem("cq_notifications");
       const savedApp = localStorage.getItem("cq_active_app");
+      const savedNav = localStorage.getItem("cq_nav_style") as NavStyle;
       
       if (savedSys) setSystemStateInternal(savedSys);
       if (savedPhase) setGamePhaseInternal(parseInt(savedPhase) as GamePhase);
       if (savedNotifs) setNotifications(JSON.parse(savedNotifs));
       if (savedApp && savedApp !== "null") setActiveAppInternal(savedApp);
+      if (savedNav) setNavStyleInternal(savedNav);
     } catch (e) {
       console.warn("Storage restricted.");
     } finally {
@@ -118,6 +124,11 @@ export function OSProvider({ children }: { children: ReactNode }) {
     }, 300); // 300ms matches the cubic-bezier exit
   };
 
+  const setNavStyle = (style: NavStyle) => {
+    setNavStyleInternal(style);
+    try { localStorage.setItem("cq_nav_style", style); } catch (e) {}
+  };
+
   return (
     <OSContext.Provider value={{ 
       systemState, setSystemState, 
@@ -129,7 +140,8 @@ export function OSProvider({ children }: { children: ReactNode }) {
       showControlCenter, setShowControlCenter,
       showNotifications, setShowNotifications,
       appOrigin, setAppOrigin,
-      isClosing, closeApp
+      isClosing, closeApp,
+      navStyle: navStyleInternal, setNavStyle
     }}>
       {children}
     </OSContext.Provider>

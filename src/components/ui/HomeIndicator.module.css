@@ -13,6 +13,12 @@
   touch-action: manipulation;
 }
 
+@media (min-width: 768px) {
+  .indicatorContainer {
+    display: none;
+  }
+}
+
 .indicatorBar {
   width: 134px;
   height: 5px;

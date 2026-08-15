@@ -4,6 +4,7 @@ import { ReactNode } from "react";
 import { OSProvider, useOS } from "@/context/OSContext";
 import StatusBar from "@/components/ui/StatusBar";
 import HomeIndicator from "@/components/ui/HomeIndicator";
+import NavigationBar from "@/components/ui/NavigationBar";
 import styles from "./DeviceShell.module.css";
 import { Loader2, Settings2 } from "lucide-react";
 
@@ -54,12 +55,16 @@ function OSRouter() {
 import GlobalOverlays from "./GlobalOverlays";
 
 function ScreenContent() {
+  const { navStyle } = useOS();
   return (
     <>
       <StatusBar />
-      <OSRouter />
-      <GlobalOverlays />
-      <HomeIndicator />
+      <div style={{ flex: 1, position: 'relative', overflow: 'hidden' }}>
+        <OSRouter />
+        <GlobalOverlays />
+        {navStyle === 'gesture' && <HomeIndicator />}
+      </div>
+      {navStyle === 'buttons' && <NavigationBar />}
     </>
   );
 }
