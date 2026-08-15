@@ -20,6 +20,9 @@ export const metadata: Metadata = {
   title: "CyberQuest | Device Investigation",
   description: "Simulated OS investigation environment.",
   robots: "noindex, nofollow",
+  icons: {
+    icon: "/favicon.svg",
+  }
 };
 
 export const viewport = {

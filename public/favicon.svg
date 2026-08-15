@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+  <!-- Dark minimal rounded background -->
+  <rect width="256" height="256" rx="56" fill="#050505"/>
+  
+  <!-- Sleek Glowing Hexagon -->
+  <polygon points="128,28 212,76 212,180 128,228 44,180 44,76" fill="none" stroke="#007aff" stroke-width="12" stroke-linejoin="round"/>
+  
+  <!-- Inner Matrix HUD Line -->
+  <polygon points="128,48 192,86 192,170 128,208 64,170 64,86" fill="none" stroke="#007aff" stroke-width="4" stroke-opacity="0.4" stroke-linejoin="round"/>
+  
+  <!-- Terminal Prompt >_ -->
+  <polyline points="85,100 125,128 85,156" fill="none" stroke="#007aff" stroke-width="20" stroke-linecap="square" stroke-linejoin="miter"/>
+  <rect x="135" y="146" width="38" height="14" fill="#007aff" />
+</svg>
