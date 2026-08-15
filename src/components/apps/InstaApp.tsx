@@ -26,7 +26,7 @@ export default function InstaApp() {
           </div>
           
           <div className={styles.postImage} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#1a1a1a' }}>
-             <img src="/logo.png" alt="CyberPhoenix" style={{ width: '80%', height: 'auto', objectFit: 'contain' }} />
+             <img src="/assets/logo.png" alt="CyberPhoenix" style={{ width: '80%', height: 'auto', objectFit: 'contain' }} />
           </div>
           
           <div className={styles.postActions}>
@@ -52,7 +52,7 @@ export default function InstaApp() {
           </div>
           
           {/* The AI-generated puppy image serving as the OSINT clue */}
-          <img src="/puppy.png" alt="Puppy" className={styles.postImage} />
+          <img src="/assets/gallery/puppy.png" alt="Puppy" className={styles.postImage} />
           
           <div className={styles.postActions}>
             <Heart size={24} className={styles.postAction} />

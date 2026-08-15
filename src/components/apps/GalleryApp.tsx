@@ -4,14 +4,13 @@ import { useState } from "react";
 import styles from "./GalleryApp.module.css";
 import AppContainer from "../os/AppContainer";
 import { ChevronLeft, Share, Heart, Trash2 } from "lucide-react";
+import RouterSticker from "./RouterSticker";
 
 const PHOTOS = [
-  { id: 1, type: "album", src: "https://images.unsplash.com/photo-1541364983171-a8ba01e95cfc?auto=format&fit=crop&q=80&w=400", title: "Doggo" },
-  { id: 2, type: "album", src: "https://images.unsplash.com/photo-1517849845537-4d257902454a?auto=format&fit=crop&q=80&w=400", title: "Buster" },
-  { id: 3, type: "album", src: "https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&q=80&w=400", title: "Park" },
-  { id: 4, type: "puzzle", src: "", title: "Important" },
-  { id: 5, type: "album", src: "https://images.unsplash.com/photo-1583337130417-3346a1be7dee?auto=format&fit=crop&q=80&w=400", title: "Sleepy" },
-  { id: 6, type: "album", src: "https://images.unsplash.com/photo-1505628346881-b72b27e84530?auto=format&fit=crop&q=80&w=400", title: "Walk" },
+  { id: 1, type: "album", src: "/assets/logo.png", title: "CyberPhoenix" },
+  { id: 2, type: "album", src: "/assets/gallery/puppy.png", title: "Buster" },
+  { id: 3, type: "album", src: "/assets/gallery/park.jpg", title: "Park" },
+  { id: 4, type: "puzzle", src: "", title: "Router Info" },
 ];
 
 export default function GalleryApp() {
@@ -32,8 +31,10 @@ export default function GalleryApp() {
               onClick={() => setActivePhoto(photo)}
             >
               {photo.type === "puzzle" ? (
-                <div style={{ width: '100%', height: '100%', background: '#333', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 10 }}>
-                  DOCUMENT
+                <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', background: '#fdfdfd', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <div style={{ width: '80%', height: '80%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <RouterSticker />
+                  </div>
                 </div>
               ) : (
                 <img src={photo.src} alt={photo.title} loading="lazy" />
@@ -54,23 +55,8 @@ export default function GalleryApp() {
             
             <div className={styles.viewerBody}>
               {activePhoto.type === "puzzle" ? (
-                <div className={styles.stickerContainer}>
-                  <div className={styles.stickerBox}>
-                    <div className={styles.stickerBrand}>NETGEAR</div>
-                    <div className={styles.stickerModel}>Nighthawk AC1900 Smart WiFi Router</div>
-                    <div className={styles.stickerDivider}></div>
-                    <div className={styles.stickerInfo}>
-                      <span><strong>Admin Login</strong></span>
-                      <span>admin</span>
-                    </div>
-                    <div className={styles.stickerInfo}>
-                      <span><strong>Key</strong></span>
-                      <span style={{ fontFamily: 'monospace', letterSpacing: 1 }}>CyPh-8A3B</span>
-                    </div>
-                    <div className={styles.stickerDivider}></div>
-                    <div className={styles.stickerBarcode}>|| |||| | |||||| || | || ||||</div>
-                    <div className={styles.stickerSerial}>S/N: 4N81938T0012C</div>
-                  </div>
+                <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#000', padding: 16 }}>
+                  <RouterSticker />
                 </div>
               ) : (
                 <img src={activePhoto.src} alt={activePhoto.title} className={styles.fullImage} />
