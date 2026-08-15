@@ -27,19 +27,16 @@ export default function GameDirector() {
 
     if (gamePhase === 0) {
       scheduleNotification("Mom", HINTS_REGISTRY.phase0_hint1, 10000); // 10s
-      scheduleNotification("Dad", HINTS_REGISTRY.phase0_hint2, 60000); // 60s
+      scheduleNotification("Dad", HINTS_REGISTRY.phase0_hint2, 35000); // 35s
     } 
     else if (gamePhase === 1) {
       scheduleNotification("Alex", HINTS_REGISTRY.phase1_hint1, 10000); // 10s
-      scheduleNotification("Alex", HINTS_REGISTRY.phase1_hint2, 45000); // 45s
+      scheduleNotification("Alex", HINTS_REGISTRY.phase1_hint2, 30000); // 30s
     }
     else if (gamePhase === 2) {
+      scheduleNotification("System", HINTS_REGISTRY.phase2_hint0, 2000); // 2s
       scheduleNotification("Alex", HINTS_REGISTRY.phase2_hint1, 10000); // 10s
-      scheduleNotification("Alex", HINTS_REGISTRY.phase2_hint2, 45000); // 45s
-    }
-    else if (gamePhase === 3) {
-      scheduleNotification("Alex", HINTS_REGISTRY.phase3_hint1, 10000); // 10s
-      scheduleNotification("Alex", HINTS_REGISTRY.phase3_hint2, 45000); // 45s
+      scheduleNotification("Alex", HINTS_REGISTRY.phase2_hint2, 35000); // 35s
     }
 
     return () => {

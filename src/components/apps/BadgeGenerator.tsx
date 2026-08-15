@@ -10,6 +10,13 @@ import {
   TerminalSquare,
   BadgeCheck,
   Hexagon,
+  TriangleAlert,
+  Camera,
+  Map,
+  Users,
+  HardDrive,
+  ExternalLink,
+  Fingerprint
 } from "lucide-react";
 import { QUEST_CONFIG } from "@/config/quest";
 import { useOS } from "@/context/OSContext";
@@ -17,25 +24,38 @@ import AppContainer from "../os/AppContainer";
 import styles from "./BadgeGenerator.module.css";
 
 export default function BadgeGenerator() {
-  const { gamePhase } = useOS();
+  const { gamePhase, setGamePhase, setSystemState, setActiveApp } = useOS();
   const [name, setName] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
-  const [showContent, setShowContent] = useState(false);
   const badgeRef = useRef<HTMLDivElement>(null);
 
+  const [permissionState, setPermissionState] = useState<"pending" | "success">("pending");
+  const [permStep, setPermStep] = useState(1);
+  const [perms, setPerms] = useState({ storage: false, camera: false, location: false, contacts: false });
+
   // Auto-launch when game is solved
-  const isSolved = gamePhase >= 4;
+  const isSolved = gamePhase >= 2;
 
   useEffect(() => {
-    if (isSolved) {
-      const timer = setTimeout(() => setShowContent(true), 1500);
+    if (permissionState === "success") {
+      const timer = setTimeout(() => {
+        window.open(QUEST_CONFIG.lore.linktreeUrl, "_blank");
+      }, 10000);
       return () => clearTimeout(timer);
-    } else {
-      setShowContent(false);
     }
-  }, [isSolved]);
+  }, [permissionState]);
 
-  if (!isSolved) return null;
+  useEffect(() => {
+    if (permStep === 5) {
+      if (!perms.storage) {
+        setPermStep(6);
+      } else if (perms.camera || perms.location || perms.contacts) {
+        setSystemState("trapped");
+      } else {
+        setPermissionState("success");
+      }
+    }
+  }, [permStep, perms, setSystemState]);
 
   const getInitials = (name: string) => {
     const words = name.trim().split(/\s+/);
@@ -72,8 +92,20 @@ export default function BadgeGenerator() {
     }
   };
 
+  if (!isSolved) {
+    return (
+      <AppContainer appId="badge" appName="Badge Gen">
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', color: 'var(--text-dim)', background: '#000' }}>
+          <Fingerprint size={64} style={{ marginBottom: 16, opacity: 0.5 }} />
+          <h2 style={{ fontFamily: 'Space Grotesk, sans-serif' }}>App Not Installed</h2>
+          <p style={{ fontSize: 14, marginTop: 8 }}>Please connect to a secure network to provision.</p>
+        </div>
+      </AppContainer>
+    );
+  }
+
   return (
-    <AppContainer appId="badge" appName="Clearance">
+    <AppContainer appId="badge" appName="Badge Gen">
       <div className={styles.generatorOverlay}>
         {/* Inject Premium Web Fonts */}
         <style
@@ -87,7 +119,75 @@ export default function BadgeGenerator() {
         {/* Background Pulse */}
         <div className={styles.backgroundPulse}></div>
 
-        {showContent && (
+        {permissionState === "pending" && permStep < 5 && (
+          <div className={styles.iosAlertOverlay}>
+            <div className={styles.iosAlertBox}>
+              <div className={styles.iosAlertContent}>
+                <div className={styles.iosAlertTitle}>
+                  {permStep === 1 && '"Badge Gen" Would Like to Access Your Storage'}
+                  {permStep === 2 && '"Badge Gen" Would Like to Access the Camera'}
+                  {permStep === 3 && '"Badge Gen" Would Like to Use Your Location'}
+                  {permStep === 4 && '"Badge Gen" Would Like to Access Your Contacts'}
+                </div>
+                <div className={styles.iosAlertText}>
+                  {permStep === 1 && "This is required to save your clearance badge locally."}
+                  {permStep === 2 && "Required to authenticate your identity via facial scan."}
+                  {permStep === 3 && "Allows the app to tag your location on the badge."}
+                  {permStep === 4 && "Used to share your badge with network operatives."}
+                </div>
+              </div>
+              <div className={styles.iosAlertButtons}>
+                <button 
+                  className={styles.iosAlertBtn} 
+                  onClick={() => {
+                    const key = permStep === 1 ? 'storage' : permStep === 2 ? 'camera' : permStep === 3 ? 'location' : 'contacts';
+                    setPerms(prev => ({ ...prev, [key]: false }));
+                    setPermStep(p => p + 1);
+                  }}
+                >
+                  Don't Allow
+                </button>
+                <button 
+                  className={`${styles.iosAlertBtn} ${styles.bold}`} 
+                  onClick={() => {
+                    const key = permStep === 1 ? 'storage' : permStep === 2 ? 'camera' : permStep === 3 ? 'location' : 'contacts';
+                    setPerms(prev => ({ ...prev, [key]: true }));
+                    setPermStep(p => p + 1);
+                  }}
+                >
+                  Allow
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {permStep === 6 && (
+          <div className={styles.iosAlertOverlay}>
+            <div className={styles.iosAlertBox}>
+              <div className={styles.iosAlertContent}>
+                <div className={styles.iosAlertTitle}>Permission Required</div>
+                <div className={styles.iosAlertText}>
+                  "Badge Gen" requires Storage Access to operate. The application will now exit.
+                </div>
+              </div>
+              <div className={styles.iosAlertButtons}>
+                <button 
+                  className={`${styles.iosAlertBtn} ${styles.bold}`} 
+                  onClick={() => {
+                    setActiveApp(null);
+                    setPermStep(1);
+                    setPerms({ storage: false, camera: false, location: false, contacts: false });
+                  }}
+                >
+                  OK
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {permissionState === "success" && (
           <div className={styles.contentWrapper}>
             <Hexagon size={48} color="#007aff" className={styles.mainIcon} />
             <h1 className={styles.mainTitle}>OPERATION CONCLUDED</h1>
@@ -187,6 +287,15 @@ export default function BadgeGenerator() {
                     DOWNLOAD BADGE
                   </>
                 )}
+              </button>
+
+              <button
+                onClick={() => window.open(QUEST_CONFIG.lore.linktreeUrl, "_blank")}
+                className={styles.networkBtn}
+                style={{ marginTop: 12 }}
+              >
+                <ExternalLink size={18} />
+                CONNECT TO NETWORK
               </button>
             </div>
           </div>

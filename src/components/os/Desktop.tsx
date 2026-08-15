@@ -5,7 +5,7 @@ import { useOS } from "@/context/OSContext";
 import { 
   Instagram, MessageSquare, Phone, Globe, 
   Music, Map, Settings, Calendar, 
-  Image
+  Image, Fingerprint
 } from "lucide-react";
 import { HINTS_REGISTRY } from "@/data/puzzles";
 
@@ -14,6 +14,7 @@ const APPS = [
   { id: "insta", name: "Instagram", Icon: Instagram, color: "#e1306c" },
   { id: "gallery", name: "Photos", Icon: Image, color: "#007aff" },
   { id: "settings", name: "Settings", Icon: Settings, color: "#8e8e93" },
+  { id: "badge", name: "Badge Gen", Icon: Fingerprint, color: "#34c759" },
   { id: "maps", name: "Maps", Icon: Map, color: "#34a853" },
   { id: "calendar", name: "Calendar", Icon: Calendar, color: "#ff3b30" }
 ];
@@ -26,7 +27,7 @@ const DOCK_APPS = [
 ];
 
 export default function Desktop() {
-  const { setActiveApp, setAppOrigin, notifications } = useOS();
+  const { setActiveApp, setAppOrigin, notifications, gamePhase } = useOS();
   const unreadCount = notifications.filter(n => !n.isRead).length;
 
   const handleAppClick = (e: React.MouseEvent, appId: string) => {

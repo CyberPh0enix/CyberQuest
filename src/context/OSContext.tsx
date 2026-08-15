@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 
-export type SystemState = "locked" | "unlocked";
+export type SystemState = "locked" | "unlocked" | "trapped";
 export type GamePhase = 0 | 1 | 2 | 3 | 4;
 export type NavStyle = "gesture" | "buttons";
 

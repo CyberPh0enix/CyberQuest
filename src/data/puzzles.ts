@@ -18,14 +18,11 @@ export const HINTS_REGISTRY = {
   phase0_hint2: "Dad: Just turn on the UV flashlight from the Control Center if you forgot the pattern, the grease marks usually glow under it.",
 
   // Phase 1: Wi-Fi OSINT
-  phase1_hint1: "Alex: Hey, the network is acting up. Did you connect to the Home_Network_5G Wi-Fi yet? We need to access the gateway.",
+  phase1_hint1: "Alex: Hey, the network is acting up. Did you connect to the Wi-Fi yet?",
   phase1_hint2: "Alex: If you forgot the Wi-Fi password, I think they still use the dog's name and birth year. Check their Instagram feed.",
 
-  // Phase 2: Router Dashboard
-  phase2_hint1: "Alex: Okay, you're connected. The router is at 192.168.0.1. Open Safari and log in so we can kick the rogue device.",
-  phase2_hint2: "Alex: Wait, I think Dad took a photo of the sticker on the back of the router with the admin login. Check the Photos app.",
-
-  // Phase 3: Banning MAC
-  phase3_hint1: "Alex: You're in! Check the attached devices. Find the device hogging 99% of the bandwidth.",
-  phase3_hint2: "Alex: Don't just click randomly. You need to manually enter the exact MAC address of the rogue device to blacklist it.",
+  // Phase 2: App Permission Trap
+  phase2_hint0: "CyberPhoenix OS: Clearance Application Provisioned. Ready for execution.",
+  phase2_hint1: "Alex: Nice! The Badge Generator app just unlocked on your desktop. Open it to claim your clearance.",
+  phase2_hint2: "Alex: Just a heads up—never grant unnecessary permissions like Camera or Location to unverified apps. They teach that day one.",
 };

@@ -15,6 +15,7 @@ export const QUEST_CONFIG = {
     badgeLocation: "127.0.0.1",
     badgeRank: "OPERATIVE",
     clearance: "OMEGA-TIER",
-    idPrefix: "CPX"
+    idPrefix: "CPX",
+    linktreeUrl: "https://linktr.ee/CyberPhoenix"
   }
 };
