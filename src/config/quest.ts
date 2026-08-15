@@ -1,14 +1,12 @@
 export const QUEST_CONFIG = {
   wifi: {
     targetSSID: "Home_Network_5G",
-    // buster2023
     passwordBase64: "YnVzdGVyMjAyMw==",
     decoys: ["xfinitywifi", "Guest_Net", "NETGEAR_24"],
   },
   router: {
     gatewayIP: "192.168.0.1",
     username: "admin",
-    // CyPh-8A3B
     passwordBase64: "Q3lQaC04QTNC",
   },
   lore: {
@@ -20,9 +18,10 @@ export const QUEST_CONFIG = {
   },
   about: {
     developer: "Uday",
-    version: "QuestOS v4.0.4",
+    osName: "iOS",
+    version: "v4.0.4",
     kernel:
-      "Darwin Kernel Version 22.1.0: root:xnu-8792.41.9~2/RELEASE_ARM64_T8103",
+      "Darwin Kernel Version 7.1.0: root:xnu-8792.41.9~2/RELEASE_ARM64_T8103",
     clubWebsite: "https://cyberphoenix.onrender.com",
     clubLinktree: "https://linktr.ee/CyberPhoenix.club",
     easterEgg: "Nah Dude! It's not your time yet.....",
