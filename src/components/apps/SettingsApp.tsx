@@ -9,11 +9,12 @@ import { QUEST_CONFIG } from "@/config/quest";
 
 export default function SettingsApp() {
   const { gamePhase, setGamePhase, navStyle, setNavStyle } = useOS();
-  const [view, setView] = useState<"main" | "wifi">("main");
+  const [view, setView] = useState<"main" | "wifi" | "about">("main");
   const [wifiPassword, setWifiPassword] = useState("");
   const [promptNetwork, setPromptNetwork] = useState<string | null>(null);
   const [localConnected, setLocalConnected] = useState<string | null>(null);
   const [error, setError] = useState("");
+  const [easterEggCount, setEasterEggCount] = useState(0);
 
   const activeNetwork = gamePhase >= 2 ? QUEST_CONFIG.wifi.targetSSID : localConnected;
 
@@ -37,7 +38,7 @@ export default function SettingsApp() {
     <AppContainer appId="settings" appName="Settings">
       <div className={styles.appWrapper}>
         <div className={styles.header}>
-          {view === "wifi" ? (
+          {view !== "main" ? (
             <button className={styles.backBtn} onClick={() => setView("main")}>
               Settings
             </button>
@@ -89,6 +90,18 @@ export default function SettingsApp() {
                 <div className={styles.itemText}>3-Button Navigation</div>
                 <div className={styles.itemRight}>
                   <div className={`${styles.toggle} ${navStyle === 'buttons' ? styles.toggleOn : ''}`}></div>
+                </div>
+              </div>
+            </div>
+
+            <div className={styles.list} style={{ marginTop: 24 }}>
+              <div className={styles.listItem} onClick={() => setView("about")}>
+                <div className={styles.iconBox} style={{ background: '#8e8e93' }}>
+                  <Info size={18} color="white" />
+                </div>
+                <div className={styles.itemText}>About Phone</div>
+                <div className={styles.itemRight}>
+                  <ChevronRight size={20} color="#c7c7cc" />
                 </div>
               </div>
             </div>
@@ -194,6 +207,52 @@ export default function SettingsApp() {
                     <span>Router</span>
                     <span className={styles.highlight}>192.168.1.1</span>
                   </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {view === "about" && (
+            <div className={styles.list}>
+              <h2 className={styles.sectionTitle}>DEVICE INFO</h2>
+              <div className={styles.listItem} onClick={() => setEasterEggCount(c => c + 1)}>
+                <div className={styles.itemText}>Developer</div>
+                <div className={styles.itemRight}>
+                  <span className={styles.valueText}>{QUEST_CONFIG.about.developer}</span>
+                </div>
+              </div>
+              <div className={styles.listItem}>
+                <div className={styles.itemText}>Version</div>
+                <div className={styles.itemRight}>
+                  <span className={styles.valueText} style={{ fontSize: 12 }}>{QUEST_CONFIG.about.version}</span>
+                </div>
+              </div>
+              <div className={styles.listItem} style={{ flexDirection: 'column', alignItems: 'flex-start', gap: '4px', padding: '12px 16px', height: 'auto' }}>
+                <div className={styles.itemText}>Kernel Build</div>
+                <div style={{ fontSize: '10px', color: '#8e8e93', fontFamily: 'monospace', wordBreak: 'break-all' }}>
+                  {QUEST_CONFIG.about.kernel}
+                </div>
+              </div>
+
+              <h2 className={styles.sectionTitle}>CLUB INFO</h2>
+              <div className={styles.listItem} onClick={() => window.open(QUEST_CONFIG.about.clubWebsite, "_blank")}>
+                <div className={styles.itemText}>Website</div>
+                <div className={styles.itemRight}>
+                  <span className={styles.valueText}>cyberphoenix.club</span>
+                  <ChevronRight size={20} color="#c7c7cc" />
+                </div>
+              </div>
+              <div className={styles.listItem} onClick={() => window.open(QUEST_CONFIG.about.clubLinktree, "_blank")}>
+                <div className={styles.itemText}>Linktree</div>
+                <div className={styles.itemRight}>
+                  <span className={styles.valueText}>CyberPhoenix</span>
+                  <ChevronRight size={20} color="#c7c7cc" />
+                </div>
+              </div>
+
+              {easterEggCount > 4 && (
+                <div style={{ marginTop: 24, textAlign: 'center', color: '#ff3b30', fontFamily: 'monospace', fontSize: 12, padding: 16 }}>
+                  {QUEST_CONFIG.about.easterEgg}
                 </div>
               )}
             </div>

@@ -17,5 +17,13 @@ export const QUEST_CONFIG = {
     clearance: "OMEGA-TIER",
     idPrefix: "CPX",
     linktreeUrl: "https://linktr.ee/CyberPhoenix"
+  },
+  about: {
+    developer: "Uday",
+    version: "QuestOS v4.0.4",
+    kernel: "Darwin Kernel Version 22.1.0: root:xnu-8792.41.9~2/RELEASE_ARM64_T8103",
+    clubWebsite: "https://cyberphoenix.onrender.com",
+    clubLinktree: "https://linktr.ee/CyberPhoenix",
+    easterEgg: "Nah Dude! It's not your time yet....."
   }
 };
