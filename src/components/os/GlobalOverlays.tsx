@@ -7,7 +7,6 @@ import {
   Plane, Signal, Sun, Volume2, 
   Camera, Calculator, Cast
 } from "lucide-react";
-import { HINTS_REGISTRY } from "@/data/puzzles";
 import { useOS } from "@/context/OSContext";
 
 export default function GlobalOverlays() {
@@ -18,6 +17,13 @@ export default function GlobalOverlays() {
     notifications, markNotificationsRead,
     setSystemState, gamePhase
   } = useOS();
+
+  // Group notifications by sender
+  const groupedNotifs = notifications.reduce((acc, n) => {
+    if (!acc[n.sender]) acc[n.sender] = [];
+    acc[n.sender].push(n);
+    return acc;
+  }, {} as Record<string, typeof notifications>);
   
   // Dummy CC states
   const [toggles, setToggles] = useState({ wifi: true, bt: true, plane: false, calc: false, cam: false, cast: false });
@@ -109,14 +115,19 @@ export default function GlobalOverlays() {
              <div style={{ color: 'rgba(255,255,255,0.5)', textAlign: 'center', marginTop: 40, fontSize: 14 }}>
                No older notifications
              </div>
-          ) : notifications.map(n => (
-            <div key={n.id} className={styles.notification}>
+          ) : Object.entries(groupedNotifs).map(([sender, notifs]) => (
+            <div key={sender} className={styles.notification}>
               <div className={styles.notifHeader}>
-                <span>{n.sender.toUpperCase()}</span>
-                <span>{n.time}</span>
+                <span>{sender.toUpperCase()}</span>
+                <span>{notifs[0].time}</span>
               </div>
               <div className={styles.notifBody}>
-                {n.text}
+                {notifs[0].text}
+                {notifs.length > 1 && (
+                  <div style={{ fontSize: 13, marginTop: 6, color: 'rgba(255,255,255,0.5)', fontWeight: 500 }}>
+                    +{notifs.length - 1} more message{notifs.length > 2 ? 's' : ''}
+                  </div>
+                )}
               </div>
             </div>
           ))}

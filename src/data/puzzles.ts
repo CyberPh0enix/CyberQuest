@@ -12,17 +12,27 @@ export const ENCRYPTED_ANSWERS = {
   lockPatternHash: "1,4,9,14,15,11,6,2" // Complex 4x4 Zigzag Hook
 };
 
-export const HINTS_REGISTRY = {
-  // Phase 0: Lockscreen
-  phase0_hint1: "Mom: I told you a hundred times to stop eating those oily potato chips while using your phone! You're leaving disgusting grease marks all over the glass!",
-  phase0_hint2: "Dad: Just turn on the UV flashlight from the Control Center if you forgot the pattern, the grease marks usually glow under it.",
-
-  // Phase 1: Wi-Fi OSINT
-  phase1_hint1: "Alex: Hey, the network is acting up. Did you connect to the Wi-Fi yet?",
-  phase1_hint2: "Alex: If you forgot the Wi-Fi password, I think they still use the dog's name and birth year. Check their Instagram feed.",
-
-  // Phase 2: App Permission Trap
-  phase2_hint0: "CyberPhoenix OS: Clearance Application Provisioned. Ready for execution.",
-  phase2_hint1: "Alex: Nice! The Badge Generator app just unlocked on your desktop. Open it to claim your clearance.",
-  phase2_hint2: "Alex: Just a heads up—never grant unnecessary permissions like Camera or Location to unverified apps. They teach that day one.",
-};
+export const QUEST_HINTS = [
+  {
+    phase: 0,
+    hints: [
+      { id: "p0_h1", sender: "Mom", text: "Stop eating those oily chips while using the phone! You're leaving grease marks everywhere.", delay: 15 },
+      { id: "p0_h2", sender: "Dad", text: "Try the UV flashlight from the Control Center if you're stuck on the pattern.", delay: 45 }
+    ]
+  },
+  {
+    phase: 1,
+    hints: [
+      { id: "p1_h1", sender: "Alex", text: "Are you in yet? Get on the Wi-Fi.", delay: 15 },
+      { id: "p1_h2", sender: "Alex", text: "Password is probably still the dog's name and birth year. Check the gallery.", delay: 40 }
+    ]
+  },
+  {
+    phase: 2,
+    hints: [
+      { id: "p2_h0", sender: "System", text: "Clearance app provisioned.", delay: 2 },
+      { id: "p2_h1", sender: "Alex", text: "Badge Generator is on the desktop. Generate your pass.", delay: 15 },
+      { id: "p2_h2", sender: "Alex", text: "Careful with permissions. Don't grant access unless it actually needs it.", delay: 40 }
+    ]
+  }
+];

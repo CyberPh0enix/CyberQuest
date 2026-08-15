@@ -5,15 +5,19 @@ import styles from "./LockScreen.module.css";
 import PatternLock from "@/components/puzzles/PatternLock";
 import { 
   Flashlight, Lock, Wifi, Bluetooth, 
-  Plane, Signal, Sun, Volume2, 
-  Camera, Calculator, LockKeyhole, Cast
 } from "lucide-react";
 import { useOS } from "@/context/OSContext";
-import { HINTS_REGISTRY } from "@/data/puzzles";
 
 export default function LockScreen() {
-  const { setSystemState, uvModeEnabled } = useOS();
+  const { setSystemState, uvModeEnabled, notifications } = useOS();
   const [view, setView] = useState<"wallpaper" | "passcode">("wallpaper");
+
+  // Group notifications by sender to keep the lockscreen clean
+  const groupedNotifs = notifications.reduce((acc, n) => {
+    if (!acc[n.sender]) acc[n.sender] = [];
+    acc[n.sender].push(n);
+    return acc;
+  }, {} as Record<string, typeof notifications>);
   
   // Use pointer state instead of touch to fully support laptop mice dragging!
   const pointerStartY = useRef(0);
@@ -73,6 +77,29 @@ export default function LockScreen() {
         <Lock size={20} className={styles.lockIcon} />
         <div className={styles.clock}>{time || "00:00"}</div>
         <div className={styles.date}>{dateStr || "Loading..."}</div>
+        
+        <div className={styles.notifList} onPointerDown={(e) => e.stopPropagation()}>
+          {Object.entries(groupedNotifs).map(([sender, notifs]) => (
+            <div key={sender} className={styles.notification}>
+              <div className={styles.notifHeader}>
+                <span>{sender}</span>
+                <span>{notifs[0].time}</span>
+              </div>
+              <div className={styles.notifBody}>
+                {notifs[0].text}
+                {notifs.length > 1 && (
+                  <div style={{ fontSize: 13, marginTop: 6, color: 'rgba(255,255,255,0.5)', fontWeight: 500 }}>
+                    +{notifs.length - 1} more message{notifs.length > 2 ? 's' : ''}
+                  </div>
+                )}
+              </div>
+            </div>
+          ))}
+          {notifications.length === 0 && (
+            <div className={styles.emptyNotifs}>No older notifications</div>
+          )}
+        </div>
+
         <div className={styles.swipeHint}>Swipe up to open</div>
       </div>
 

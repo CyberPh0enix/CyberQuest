@@ -7,7 +7,6 @@ import {
   Music, Map, Settings, Calendar, 
   Image, Fingerprint
 } from "lucide-react";
-import { HINTS_REGISTRY } from "@/data/puzzles";
 
 // We'll use lucide-react icons for fake apps
 const APPS = [
