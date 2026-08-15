@@ -3,7 +3,7 @@ export const QUEST_CONFIG = {
     targetSSID: "Home_Network_5G",
     // buster2023
     passwordBase64: "YnVzdGVyMjAyMw==",
-    decoys: ["xfinitywifi", "Guest_Net", "NETGEAR_24"]
+    decoys: ["xfinitywifi", "Guest_Net", "NETGEAR_24"],
   },
   router: {
     gatewayIP: "192.168.0.1",
@@ -16,14 +16,15 @@ export const QUEST_CONFIG = {
     badgeRank: "OPERATIVE",
     clearance: "OMEGA-TIER",
     idPrefix: "CPX",
-    linktreeUrl: "https://linktr.ee/CyberPhoenix"
+    linktreeUrl: "https://linktr.ee/CyberPhoenix.club",
   },
   about: {
     developer: "Uday",
     version: "QuestOS v4.0.4",
-    kernel: "Darwin Kernel Version 22.1.0: root:xnu-8792.41.9~2/RELEASE_ARM64_T8103",
+    kernel:
+      "Darwin Kernel Version 22.1.0: root:xnu-8792.41.9~2/RELEASE_ARM64_T8103",
     clubWebsite: "https://cyberphoenix.onrender.com",
-    clubLinktree: "https://linktr.ee/CyberPhoenix",
-    easterEgg: "Nah Dude! It's not your time yet....."
-  }
+    clubLinktree: "https://linktr.ee/CyberPhoenix.club",
+    easterEgg: "Nah Dude! It's not your time yet.....",
+  },
 };
