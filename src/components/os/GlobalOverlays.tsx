@@ -15,7 +15,8 @@ export default function GlobalOverlays() {
     uvModeEnabled, setUvModeEnabled, 
     showControlCenter, setShowControlCenter, 
     showNotifications, setShowNotifications,
-    notifications, markNotificationsRead
+    notifications, markNotificationsRead,
+    setSystemState, gamePhase
   } = useOS();
   
   // Dummy CC states
@@ -179,8 +180,18 @@ export default function GlobalOverlays() {
         </div>
         
         <div className={styles.ccFlexRow} style={{ marginTop: "16px" }}>
-           <div className={styles.ccButton} style={{ flex: 2, borderRadius: "16px", justifySelf: "flex-start", width: "100%", justifyContent: "flex-start", paddingLeft: "16px", height: "60px", aspectRatio: "auto" }}>
-             <LockKeyhole size={20} style={{ marginRight: "12px" }}/> Focus
+           <div 
+             className={styles.ccButton} 
+             style={{ flex: 2, borderRadius: "16px", justifySelf: "flex-start", width: "100%", justifyContent: "flex-start", paddingLeft: "16px", height: "60px", aspectRatio: "auto" }}
+             onClick={(e) => {
+               e.stopPropagation();
+               if (gamePhase >= 1) {
+                 setSystemState("locked");
+                 setShowControlCenter(false);
+               }
+             }}
+           >
+             <LockKeyhole size={20} style={{ marginRight: "12px" }}/> Lock Screen
            </div>
         </div>
 
