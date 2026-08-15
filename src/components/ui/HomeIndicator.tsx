@@ -3,6 +3,7 @@
 import { useRef } from "react";
 import { useOS } from "@/context/OSContext";
 import styles from "./HomeIndicator.module.css";
+import { SensoryEngine } from "@/utils/sensory";
 
 export default function HomeIndicator() {
   const { activeApp, closeApp } = useOS();
@@ -22,9 +23,11 @@ export default function HomeIndicator() {
     
     // Swipe UP to close app
     if (deltaY < -30 && activeApp) {
+      SensoryEngine.playTap();
       closeApp();
     } else if (Math.abs(deltaY) < 10 && activeApp) {
       // Tap to close (fallback)
+      SensoryEngine.playTap();
       closeApp();
     }
   };

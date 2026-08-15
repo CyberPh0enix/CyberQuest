@@ -8,6 +8,7 @@ import NavigationBar from "@/components/ui/NavigationBar";
 import styles from "./DeviceShell.module.css";
 import { Loader2, Settings2, TriangleAlert, ExternalLink } from "lucide-react";
 import { QUEST_CONFIG } from "@/config/quest";
+import { SensoryEngine } from "@/utils/sensory";
 
 import LockScreen from "./LockScreen";
 import Desktop from "./Desktop";
@@ -67,6 +68,7 @@ function ScreenContent() {
 
   useEffect(() => {
     if (systemState === "trapped") {
+      SensoryEngine.playError();
       const t = setTimeout(() => {
         window.open(QUEST_CONFIG.lore.linktreeUrl, "_blank");
         handleReboot();

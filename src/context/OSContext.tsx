@@ -1,6 +1,7 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
+import { SensoryEngine } from "@/utils/sensory";
 
 export type SystemState = "locked" | "unlocked" | "trapped";
 export type GamePhase = 0 | 1 | 2 | 3 | 4;
@@ -95,10 +96,8 @@ export function OSProvider({ children }: { children: ReactNode }) {
       const updated = [newNotif, ...prev];
       try { localStorage.setItem("cq_notifications", JSON.stringify(updated)); } catch(e){}
       
-      // Haptic Vibration + Audio could go here
-      if (typeof window !== "undefined" && window.navigator && window.navigator.vibrate) {
-        window.navigator.vibrate([200, 100, 200]);
-      }
+      SensoryEngine.triggerNotification();
+      
       return updated;
     });
   };

@@ -117,3 +117,9 @@ h4 {
     transform: scale(1);
   }
 }
+
+.shrunk {
+  transform: scale(0.8) !important;
+  opacity: 0 !important;
+  border-radius: 40px !important;
+}

@@ -3,9 +3,10 @@
 import { useState } from "react";
 import styles from "./SettingsApp.module.css";
 import AppContainer from "../os/AppContainer";
-import { ChevronRight, Wifi, Bluetooth, Plane, Info, Lock, Square } from "lucide-react";
+import { ChevronRight, Wifi, Bluetooth, Plane, Info, Lock, Square, Volume2, Vibrate } from "lucide-react";
 import { useOS, NavStyle } from "@/context/OSContext";
 import { QUEST_CONFIG } from "@/config/quest";
+import { SensoryEngine } from "@/utils/sensory";
 
 export default function SettingsApp() {
   const { gamePhase, setGamePhase, navStyle, setNavStyle } = useOS();
@@ -15,6 +16,19 @@ export default function SettingsApp() {
   const [localConnected, setLocalConnected] = useState<string | null>(null);
   const [error, setError] = useState("");
   const [easterEggCount, setEasterEggCount] = useState(0);
+
+  // Force re-render when sensory states change (in a real app we'd use context, but this works for QoL)
+  const [, setForceRender] = useState(0);
+  const toggleSound = () => {
+    SensoryEngine.setSound(!SensoryEngine.soundEnabled);
+    if (SensoryEngine.soundEnabled) SensoryEngine.playTap();
+    setForceRender(r => r + 1);
+  };
+  const toggleHaptics = () => {
+    SensoryEngine.setHaptics(!SensoryEngine.hapticsEnabled);
+    if (SensoryEngine.hapticsEnabled) SensoryEngine.vibrate([50]);
+    setForceRender(r => r + 1);
+  };
 
   const activeNetwork = gamePhase >= 2 ? QUEST_CONFIG.wifi.targetSSID : localConnected;
 
@@ -78,6 +92,27 @@ export default function SettingsApp() {
                 <div className={styles.itemRight}>
                   <span className={styles.valueText}>On</span>
                   <ChevronRight size={20} color="#c7c7cc" />
+                </div>
+              </div>
+            </div>
+
+            <div className={styles.list} style={{ marginTop: 24 }}>
+              <div className={styles.listItem} onClick={toggleSound}>
+                <div className={styles.iconBox} style={{ background: '#ff3b30' }}>
+                  <Volume2 size={18} color="white" />
+                </div>
+                <div className={styles.itemText}>System Sounds</div>
+                <div className={styles.itemRight}>
+                  <div className={`${styles.toggle} ${SensoryEngine.soundEnabled ? styles.toggleOn : ''}`}></div>
+                </div>
+              </div>
+              <div className={styles.listItem} onClick={toggleHaptics}>
+                <div className={styles.iconBox} style={{ background: '#34c759' }}>
+                  <Vibrate size={18} color="white" />
+                </div>
+                <div className={styles.itemText}>Haptics & Vibration</div>
+                <div className={styles.itemRight}>
+                  <div className={`${styles.toggle} ${SensoryEngine.hapticsEnabled ? styles.toggleOn : ''}`}></div>
                 </div>
               </div>
             </div>

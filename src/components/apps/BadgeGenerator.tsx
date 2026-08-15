@@ -22,6 +22,7 @@ import { QUEST_CONFIG } from "@/config/quest";
 import { useOS } from "@/context/OSContext";
 import AppContainer from "../os/AppContainer";
 import styles from "./BadgeGenerator.module.css";
+import { SensoryEngine } from "@/utils/sensory";
 
 export default function BadgeGenerator() {
   const { gamePhase, setGamePhase, setSystemState, setActiveApp } = useOS();
@@ -38,6 +39,7 @@ export default function BadgeGenerator() {
 
   useEffect(() => {
     if (permissionState === "success") {
+      SensoryEngine.playSuccess();
       const timer = setTimeout(() => {
         window.open(QUEST_CONFIG.lore.linktreeUrl, "_blank");
       }, 10000);

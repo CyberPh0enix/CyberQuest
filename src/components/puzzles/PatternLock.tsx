@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useCallback } from "react";
 import styles from "./PatternLock.module.css";
 import { ENCRYPTED_ANSWERS } from "@/data/puzzles";
+import { SensoryEngine } from "@/utils/sensory";
 
 interface Point { x: number; y: number }
 
@@ -26,8 +27,10 @@ export default function PatternLock({
   const validatePattern = useCallback((drawn: number[]) => {
     const drawnStr = drawn.join(",");
     if (drawnStr === ENCRYPTED_ANSWERS.lockPatternHash) {
+      SensoryEngine.playSuccess();
       onSuccess();
     } else {
+      SensoryEngine.playError();
       setErrorStatus("Incorrect Pattern");
       // Flash error for 1s then reset
       setTimeout(() => {
@@ -85,10 +88,7 @@ export default function PatternLock({
       const index = parseInt(indexStr, 10);
       if (!pattern.includes(index)) {
         setPattern(prev => [...prev, index]);
-        // Provide haptic feedback if available
-        if (typeof window !== "undefined" && window.navigator && window.navigator.vibrate) {
-          window.navigator.vibrate(20); // short tick
-        }
+        SensoryEngine.playKeystroke();
       }
     }
   };
