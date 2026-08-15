@@ -67,13 +67,11 @@
   stroke-linecap: round;
   stroke-linejoin: round;
   fill: none;
-  filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.5));
   transition: stroke 0.3s ease;
 }
 
 .lineError {
   stroke: #ff3b30;
-  filter: drop-shadow(0 0 4px rgba(255, 59, 48, 0.5));
 }
 
 .feedback {
@@ -102,9 +100,8 @@
   pointer-events: none;
   z-index: 3;
   opacity: 0;
-  mix-blend-mode: screen;
   transition: opacity 0.5s ease;
-  filter: blur(2px) contrast(200%);
+  /* Optimized for Chromium: removed blur, contrast, and mix-blend-mode which caused heavy lag */
   /* A 4x4 Zigzag smudge mapped to [1, 4, 9, 14, 15, 11, 6, 2] */
   background: radial-gradient(circle at 37.5% 12.5%, rgba(200, 210, 215, 0.15) 0%, transparent 12%),
               radial-gradient(circle at 12.5% 37.5%, rgba(200, 210, 215, 0.2) 0%, transparent 15%),

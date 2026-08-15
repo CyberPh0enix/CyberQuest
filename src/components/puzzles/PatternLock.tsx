@@ -146,7 +146,8 @@ export default function PatternLock({
             6: 200, 120
             2: 200, 40
           */}
-          <path d="M 120 40 L 40 120 L 120 200 L 200 280 L 280 280 L 280 200 L 200 120 L 200 40" stroke="rgba(200, 210, 215, 0.15)" strokeWidth="26" strokeLinecap="round" strokeLinejoin="round" fill="none" filter="blur(6px)" />
+          {/* Faint paths mimicking the zigzag grease marks */}
+          <path d="M 120 40 L 40 120 L 120 200 L 200 280 L 280 280 L 280 200 L 200 120 L 200 40" stroke="rgba(200, 210, 215, 0.08)" strokeWidth="36" strokeLinecap="round" strokeLinejoin="round" fill="none" />
         </svg>
 
         {/* Live Drawing SVG */}
