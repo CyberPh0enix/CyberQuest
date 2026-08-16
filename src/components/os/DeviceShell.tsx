@@ -58,7 +58,7 @@ import GlobalOverlays from "./GlobalOverlays";
 import { useEffect } from "react";
 
 function ScreenContent() {
-  const { navStyle, systemState, setSystemState, setGamePhase, setActiveApp, wipeSystem } = useOS();
+  const { navStyle, systemState, setSystemState, setGamePhase, setActiveApp, wipeSystem, isFullscreenEnforced } = useOS();
 
   const handleReboot = () => {
     wipeSystem();
@@ -68,7 +68,7 @@ function ScreenContent() {
   // Enforce immersive fullscreen mode on mobile browsers
   useEffect(() => {
     const enforceFullscreen = async () => {
-      if (document.documentElement.requestFullscreen && !document.fullscreenElement) {
+      if (isFullscreenEnforced && document.documentElement.requestFullscreen && !document.fullscreenElement) {
         try {
           await document.documentElement.requestFullscreen();
         } catch (e) {
@@ -77,9 +77,12 @@ function ScreenContent() {
       }
     };
     
-    document.addEventListener('pointerdown', enforceFullscreen);
+    if (isFullscreenEnforced) {
+      document.addEventListener('pointerdown', enforceFullscreen);
+    }
+    
     return () => document.removeEventListener('pointerdown', enforceFullscreen);
-  }, []);
+  }, [isFullscreenEnforced]);
 
   useEffect(() => {
     if (systemState === "trapped") {

@@ -38,6 +38,8 @@ interface OSContextType {
   closeApp: () => void;
   navStyle: NavStyle;
   setNavStyle: (style: NavStyle) => void;
+  isFullscreenEnforced: boolean;
+  setIsFullscreenEnforced: (val: boolean) => void;
   wipeSystem: () => void;
 }
 
@@ -56,6 +58,7 @@ export function OSProvider({ children }: { children: ReactNode }) {
   const [appOrigin, setAppOrigin] = useState<{ x: number, y: number } | null>(null);
   const [isClosing, setIsClosing] = useState(false);
   const [navStyleInternal, setNavStyleInternal] = useState<NavStyle>("gesture");
+  const [isFullscreenEnforced, setIsFullscreenEnforcedInternal] = useState(true);
 
   useEffect(() => {
     try {
@@ -64,12 +67,14 @@ export function OSProvider({ children }: { children: ReactNode }) {
       const savedNotifs = localStorage.getItem("cq_notifications");
       const savedApp = localStorage.getItem("cq_active_app");
       const savedNav = localStorage.getItem("cq_nav_style") as NavStyle;
+      const savedFullscreen = localStorage.getItem("cq_fullscreen");
       
       if (savedSys) setSystemStateInternal(savedSys);
       if (savedPhase) setGamePhaseInternal(parseInt(savedPhase) as GamePhase);
       if (savedNotifs) setNotifications(JSON.parse(savedNotifs));
       if (savedApp && savedApp !== "null") setActiveAppInternal(savedApp);
       if (savedNav) setNavStyleInternal(savedNav);
+      if (savedFullscreen !== null) setIsFullscreenEnforcedInternal(savedFullscreen === "true");
     } catch (e) {
       console.warn("Storage restricted.");
     } finally {
@@ -129,6 +134,18 @@ export function OSProvider({ children }: { children: ReactNode }) {
     try { localStorage.setItem("cq_nav_style", style); } catch (e) {}
   };
 
+  const setIsFullscreenEnforced = (val: boolean) => {
+    setIsFullscreenEnforcedInternal(val);
+    try { localStorage.setItem("cq_fullscreen", val.toString()); } catch (e) {}
+    
+    // Attempt to toggle document immediately
+    if (!val && document.fullscreenElement) {
+      document.exitFullscreen().catch(()=>{});
+    } else if (val && !document.fullscreenElement) {
+      document.documentElement.requestFullscreen().catch(()=>{});
+    }
+  };
+
   const wipeSystem = () => {
     setActiveAppInternal(null);
     setGamePhaseInternal(0);
@@ -161,6 +178,7 @@ export function OSProvider({ children }: { children: ReactNode }) {
       appOrigin, setAppOrigin,
       isClosing, closeApp,
       navStyle: navStyleInternal, setNavStyle,
+      isFullscreenEnforced, setIsFullscreenEnforced,
       wipeSystem
     }}>
       {children}

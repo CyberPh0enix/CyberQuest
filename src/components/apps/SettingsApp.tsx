@@ -19,7 +19,7 @@ import { QUEST_CONFIG } from "@/config/quest";
 import { SensoryEngine } from "@/utils/sensory";
 
 export default function SettingsApp() {
-  const { gamePhase, setGamePhase, navStyle, setNavStyle } = useOS();
+  const { gamePhase, setGamePhase, navStyle, setNavStyle, isFullscreenEnforced, setIsFullscreenEnforced } = useOS();
   const [view, setView] = useState<"main" | "wifi" | "about">("main");
   const [wifiPassword, setWifiPassword] = useState("");
   const [promptNetwork, setPromptNetwork] = useState<string | null>(null);
@@ -169,6 +169,23 @@ export default function SettingsApp() {
                   <div className={styles.itemRight}>
                     <div
                       className={`${styles.toggle} ${navStyle === "buttons" ? styles.toggleOn : ""}`}
+                    ></div>
+                  </div>
+                </div>
+                <div
+                  className={styles.listItem}
+                  onClick={() => setIsFullscreenEnforced(!isFullscreenEnforced)}
+                >
+                  <div
+                    className={styles.iconBox}
+                    style={{ background: "#000000" }}
+                  >
+                    <Square size={18} color="white" />
+                  </div>
+                  <div className={styles.itemText}>Immersive Fullscreen</div>
+                  <div className={styles.itemRight}>
+                    <div
+                      className={`${styles.toggle} ${isFullscreenEnforced ? styles.toggleOn : ""}`}
                     ></div>
                   </div>
                 </div>
