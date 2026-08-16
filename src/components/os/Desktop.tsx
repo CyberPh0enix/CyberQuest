@@ -26,7 +26,7 @@ const DOCK_APPS = [
 ];
 
 export default function Desktop() {
-  const { setActiveApp, setAppOrigin, notifications, gamePhase } = useOS();
+  const { setActiveApp, setAppOrigin, notifications, gamePhase, activeApp } = useOS();
   const unreadCount = notifications.filter(n => !n.isRead).length;
 
   const handleAppClick = (e: React.MouseEvent, appId: string) => {
@@ -47,7 +47,7 @@ export default function Desktop() {
   };
 
   return (
-    <div className={styles.desktopWrapper}>
+    <div className={`${styles.desktopWrapper} ${activeApp ? styles.appOpen : ""}`}>
       
       {/* Main Grid */}
       <div className={styles.appGrid}>

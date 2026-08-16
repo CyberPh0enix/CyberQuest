@@ -60,10 +60,10 @@ export default function AppContainer({ appId, appName, children }: AppContainerP
     transformOrigin: appOrigin ? `${appOrigin.x}px ${appOrigin.y}px` : 'center center',
   };
 
-  if (dragY < 0) {
+  if (dragY < 0 && !isClosing) {
     dynamicStyle.transform = `translateY(${dragY}px) scale(${scale})`;
     dynamicStyle.opacity = opacity;
-    dynamicStyle.transition = isDragging.current ? 'none' : 'transform 0.3s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.3s ease';
+    dynamicStyle.transition = isDragging.current ? 'none' : 'transform 0.4s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.3s ease';
   }
 
   return (
