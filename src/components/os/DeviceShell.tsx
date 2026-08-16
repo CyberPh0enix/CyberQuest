@@ -20,6 +20,7 @@ import MessagesApp from "@/components/apps/MessagesApp";
 import AppContainer from "./AppContainer";
 import GameDirector from "./GameDirector";
 import BadgeGenerator from "@/components/apps/BadgeGenerator";
+import MusicApp from "@/components/apps/MusicApp";
 
 // internal router to switch between OS states and Apps
 function OSRouter() {
@@ -39,9 +40,10 @@ function OSRouter() {
       {activeApp === "browser" && <BrowserApp />}
       {activeApp === "messages" && <MessagesApp />}
       {activeApp === "badge" && <BadgeGenerator />}
+      {activeApp === "music" && <MusicApp />}
       
       {/* Elegant Stub for unimplemented apps */}
-      {activeApp && !["insta", "gallery", "settings", "browser", "messages", "badge"].includes(activeApp) && (
+      {activeApp && !["insta", "gallery", "settings", "browser", "messages", "badge", "music"].includes(activeApp) && (
         <AppContainer appId={activeApp} appName={activeApp.charAt(0).toUpperCase() + activeApp.slice(1)}>
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', color: 'var(--text-dim)' }}>
             <Settings2 size={64} style={{ marginBottom: 16, opacity: 0.5 }} />
