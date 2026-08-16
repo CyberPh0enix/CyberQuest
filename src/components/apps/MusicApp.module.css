@@ -26,7 +26,8 @@
   object-fit: cover;
   filter: blur(60px) saturate(200%);
   opacity: 0.4;
-  transform: scale(1.2);
+  transform: scale(1.2) translateZ(0);
+  will-change: transform;
   animation: pulseBg 10s infinite alternate linear;
 }
 
@@ -52,6 +53,8 @@
   align-items: center;
   backdrop-filter: blur(30px);
   -webkit-backdrop-filter: blur(30px);
+  transform: translateZ(0);
+  will-change: transform;
   z-index: 10;
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
@@ -173,6 +176,8 @@
   background: rgba(20, 20, 25, 0.7);
   backdrop-filter: blur(40px);
   -webkit-backdrop-filter: blur(40px);
+  transform: translateZ(0);
+  will-change: transform;
   border-top: 1px solid rgba(255, 255, 255, 0.08);
   display: flex;
   flex-direction: column;

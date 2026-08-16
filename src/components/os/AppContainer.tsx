@@ -61,7 +61,7 @@ export default function AppContainer({ appId, appName, children }: AppContainerP
   };
 
   if (dragY < 0 && !isClosing) {
-    dynamicStyle.transform = `translateY(${dragY}px) scale(${scale})`;
+    dynamicStyle.transform = `translateY(${dragY}px) scale3d(${scale}, ${scale}, 1) translateZ(0)`;
     dynamicStyle.opacity = opacity;
     dynamicStyle.transition = isDragging.current ? 'none' : 'transform 0.4s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.3s ease';
   }

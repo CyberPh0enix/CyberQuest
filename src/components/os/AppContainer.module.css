@@ -8,16 +8,18 @@
   z-index: 30;
   display: flex;
   flex-direction: column;
-  flex-direction: column;
   overflow: hidden;
-  transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.3s ease, border-radius 0.4s cubic-bezier(0.32, 0.72, 0, 1);
-  transform: scale(1);
+  transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.3s ease;
+  transform: scale3d(1, 1, 1) translateZ(0);
   opacity: 1;
   border-radius: 0px;
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
 .shrunk {
-  transform: scale(0) !important;
+  transform: scale3d(0.001, 0.001, 1) translateZ(0) !important;
   opacity: 0 !important;
   border-radius: 40px !important;
   pointer-events: none;
