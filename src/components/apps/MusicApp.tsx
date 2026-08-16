@@ -104,7 +104,8 @@ export default function MusicApp() {
           },
           onError: (e: any) => {
             console.error("YT Error:", e.data);
-            handleNext(); // Skip broken tracks automatically
+            // 500ms stabilization delay prevents rapid-fire "not attached to DOM" iframe crashes
+            setTimeout(() => handleNext(), 500);
           }
         }
       });
@@ -205,8 +206,11 @@ export default function MusicApp() {
       <div className={styles.container}>
         
         {/* Hidden YouTube Player allocated correctly to bypass invisible zero-pixel crashing */}
+        {/* Shielded in a generic wrapper so React doesn't fight YouTube for DOM control when div becomes iframe */}
         <div style={{ position: 'absolute', top: -9999, left: -9999, width: 200, height: 200, opacity: 0, pointerEvents: 'none' }}>
-          <div ref={playerContainerRef}></div>
+          <div id="cyberquest-yt-bridge">
+            <div ref={playerContainerRef}></div>
+          </div>
         </div>
 
         <div className={styles.searchHeader}>
