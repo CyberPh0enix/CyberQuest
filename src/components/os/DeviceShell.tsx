@@ -65,6 +65,22 @@ function ScreenContent() {
     window.location.reload();
   };
 
+  // Enforce immersive fullscreen mode on mobile browsers
+  useEffect(() => {
+    const enforceFullscreen = async () => {
+      if (document.documentElement.requestFullscreen && !document.fullscreenElement) {
+        try {
+          await document.documentElement.requestFullscreen();
+        } catch (e) {
+          // Silent catch for browsers that block it
+        }
+      }
+    };
+    
+    document.addEventListener('pointerdown', enforceFullscreen);
+    return () => document.removeEventListener('pointerdown', enforceFullscreen);
+  }, []);
+
   useEffect(() => {
     if (systemState === "trapped") {
       SensoryEngine.playError();
