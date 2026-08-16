@@ -61,6 +61,19 @@ export default function LockScreen() {
     }
   };
 
+  // Add spacebar unlock support for laptops/desktops
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.code === 'Space' && view === "wallpaper") {
+        setView("passcode");
+      } else if (e.code === 'Escape' && view === "passcode") {
+        setView("wallpaper");
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [view]);
+
   const unlockDevice = () => {
     setSystemState("unlocked");
   };

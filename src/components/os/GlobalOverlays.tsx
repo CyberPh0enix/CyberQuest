@@ -21,7 +21,7 @@ export default function GlobalOverlays() {
 
   const { 
     results, currentTrackIndex, isPlaying, isBuffering, isPlayerReady,
-    togglePlay, handleNext, handlePrev 
+    volume, togglePlay, handleNext, handlePrev, handleVolumeChange
   } = useMusic();
   const activeTrack = currentTrackIndex !== -1 ? results[currentTrackIndex] : null;
 
@@ -35,7 +35,6 @@ export default function GlobalOverlays() {
   // Dummy CC states
   const [toggles, setToggles] = useState({ wifi: true, bt: true, plane: false, calc: false, cam: false, cast: false });
   const [brightness, setBrightness] = useState(70);
-  const [volume, setVolume] = useState(40);
 
   const pointerStartY = useRef(0);
   const pointerStartX = useRef(0);
@@ -168,7 +167,7 @@ export default function GlobalOverlays() {
               <div className={styles.ccSliderFill} style={{ height: `${brightness}%` }}></div>
               <Sun size={20} className={styles.ccSliderIcon} style={{ color: brightness > 50 ? "black" : "white" }} />
             </div>
-            <div className={styles.ccSliderBlock} onClick={(e) => handleScrub(e, setVolume)}>
+            <div className={styles.ccSliderBlock} onClick={(e) => handleScrub(e, handleVolumeChange)}>
               <div className={styles.ccSliderFill} style={{ height: `${volume}%` }}></div>
               <Volume2 size={20} className={styles.ccSliderIcon} style={{ color: volume > 50 ? "black" : "white" }} />
             </div>

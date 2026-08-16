@@ -32,12 +32,14 @@ interface MusicContextType {
   isBuffering: boolean;
   isApiReady: boolean;
   isPlayerReady: boolean;
+  volume: number;
   handleSearch: (overrideQuery?: string, isStartup?: boolean) => Promise<void>;
   togglePlay: () => void;
   playTrack: (index: number) => void;
   handleNext: () => void;
   handlePrev: () => void;
   handleScrub: (percent: number) => void;
+  handleVolumeChange: (percent: number) => void;
 }
 
 const MusicContext = createContext<MusicContextType | null>(null);
@@ -59,6 +61,10 @@ export const MusicProvider = ({ children }: { children: ReactNode }) => {
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [isBuffering, setIsBuffering] = useState(false);
+  const [volume, setVolume] = useState(100);
+  
+  const resultsRef = useRef(results);
+  useEffect(() => { resultsRef.current = results; }, [results]);
   
   const [isApiReady, setIsApiReady] = useState(false);
   const [isPlayerReady, setIsPlayerReady] = useState(false);
@@ -133,12 +139,12 @@ export const MusicProvider = ({ children }: { children: ReactNode }) => {
             } else if (e.data === 3) { // Buffering
               setIsBuffering(true);
             } else if (e.data === 0) { // Ended
-              handleNext();
+              handleNext(true);
             }
           },
           onError: (e: any) => {
             console.error("YT Error:", e.data);
-            setTimeout(() => handleNext(), 500);
+            setTimeout(() => handleNext(true), 500);
           }
         }
       });
@@ -193,17 +199,19 @@ export const MusicProvider = ({ children }: { children: ReactNode }) => {
     setIsPlaying(true);
   };
 
-  const handleNext = () => {
-    SensoryEngine.playTap();
-    if (results.length === 0) return;
-    setCurrentTrackIndex(prev => (prev + 1) % results.length);
+  const handleNext = (isAuto = false) => {
+    if (!isAuto) SensoryEngine.playTap();
+    const currentResults = resultsRef.current;
+    if (currentResults.length === 0) return;
+    setCurrentTrackIndex(prev => (prev + 1) % currentResults.length);
     setIsPlaying(true);
   };
 
   const handlePrev = () => {
     SensoryEngine.playTap();
-    if (results.length === 0) return;
-    setCurrentTrackIndex(prev => (prev === 0 ? results.length - 1 : prev - 1));
+    const currentResults = resultsRef.current;
+    if (currentResults.length === 0) return;
+    setCurrentTrackIndex(prev => (prev === 0 ? currentResults.length - 1 : prev - 1));
     setIsPlaying(true);
   };
 
@@ -215,11 +223,18 @@ export const MusicProvider = ({ children }: { children: ReactNode }) => {
     setProgress(percent * 100);
   };
 
+  const handleVolumeChange = (percent: number) => {
+    setVolume(percent);
+    if (playerRef.current && playerRef.current.setVolume) {
+      playerRef.current.setVolume(percent);
+    }
+  };
+
   return (
     <MusicContext.Provider value={{
       searchQuery, setSearchQuery, results, isSearching, currentTrackIndex,
       isPlaying, progress, currentTime, duration, isBuffering, isApiReady, isPlayerReady,
-      handleSearch, togglePlay, playTrack, handleNext, handlePrev, handleScrub
+      volume, handleSearch, togglePlay, playTrack, handleNext, handlePrev, handleScrub, handleVolumeChange
     }}>
       {/* OS-Level Hidden YouTube Player */}
       <div style={{ position: 'absolute', top: -9999, left: -9999, width: 200, height: 200, opacity: 0, pointerEvents: 'none' }}>
