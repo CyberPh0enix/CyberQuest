@@ -50,17 +50,25 @@ export default function MusicApp() {
     } else {
       setIsApiReady(true);
     }
+    
+    // Initial load default music
+    if (results.length === 0 && !isSearching && searchQuery === "") {
+      handleSearch("welcome movie music", true);
+    }
+    
     return () => { if (syncInterval.current) clearInterval(syncInterval.current); };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleSearch = async () => {
-    if (!searchQuery.trim()) return;
-    SensoryEngine.playTap();
+  const handleSearch = async (overrideQuery?: string, isStartup?: boolean) => {
+    const queryToSearch = typeof overrideQuery === "string" ? overrideQuery : searchQuery;
+    if (!queryToSearch.trim()) return;
+    
+    if (!isStartup) SensoryEngine.playTap();
     setIsSearching(true);
     
     try {
-      // Using our custom Next.js API Edge Route to natively scrape YouTube
-      const response = await fetch(`/api/music/search?q=${encodeURIComponent(searchQuery)}`);
+      const response = await fetch(`/api/music/search?q=${encodeURIComponent(queryToSearch)}`);
       const data = await response.json();
       
       if (data.results) {
@@ -205,6 +213,14 @@ export default function MusicApp() {
     <AppContainer appId="music" appName="Music">
       <div className={styles.container}>
         
+        {/* Dynamic Glowing Background */}
+        {currentTrackIndex !== -1 && results[currentTrackIndex] && (
+          <div className={styles.nowPlayingBackground}>
+            <img src={results[currentTrackIndex].albumArt} alt="" className={styles.bgImage} />
+            <div className={styles.bgOverlay}></div>
+          </div>
+        )}
+
         {/* Hidden YouTube Player allocated correctly to bypass invisible zero-pixel crashing */}
         {/* Shielded in a generic wrapper so React doesn't fight YouTube for DOM control when div becomes iframe */}
         <div style={{ position: 'absolute', top: -9999, left: -9999, width: 200, height: 200, opacity: 0, pointerEvents: 'none' }}>
@@ -230,8 +246,8 @@ export default function MusicApp() {
           <div className={styles.trackList}>
             {results.length === 0 && !isSearching ? (
               <div className={styles.emptyState}>
-                <Music size={48} />
-                <p>Search YouTube to instantly stream full tracks.</p>
+                <Music size={56} opacity={0.5} />
+                <p>Search YouTube to instantly stream<br/>full high-resolution tracks.</p>
               </div>
             ) : (
               results.map((track, idx) => (
@@ -250,35 +266,49 @@ export default function MusicApp() {
             )}
           </div>
 
-          <div className={styles.playbackEngine}>
-            <div className={styles.progressWrapper}>
-              <span>{formatTime(currentTime)}</span>
-              <div className={styles.progressBar} onClick={handleScrub}>
-                <div className={styles.progressFill} style={{ width: `${progress}%` }}></div>
+          {currentTrackIndex !== -1 && results[currentTrackIndex] && (
+            <div className={styles.playbackEngine}>
+              <div className={styles.nowPlayingInfo}>
+                <img 
+                  src={results[currentTrackIndex].albumArt} 
+                  alt="Now Playing" 
+                  className={`${styles.nowPlayingArt} ${isPlaying && !isBuffering ? styles.spin : ''}`} 
+                />
+                <div className={styles.nowPlayingText}>
+                  <span className={styles.nowPlayingTitle}>{results[currentTrackIndex].title}</span>
+                  <span className={styles.nowPlayingArtist}>{results[currentTrackIndex].artist}</span>
+                </div>
               </div>
-              <span>{formatTime(duration)}</span>
-            </div>
-            
-            <div className={styles.controls}>
-              <button className={styles.btn} onClick={handlePrev} disabled={results.length === 0 || !isPlayerReady}>
-                <SkipBack size={24} />
-              </button>
+
+              <div className={styles.progressWrapper}>
+                <span>{formatTime(currentTime)}</span>
+                <div className={styles.progressBar} onClick={handleScrub}>
+                  <div className={styles.progressFill} style={{ width: `${progress}%` }}></div>
+                </div>
+                <span>{formatTime(duration)}</span>
+              </div>
               
-              <button className={styles.playBtn} onClick={togglePlay} disabled={results.length === 0 || !isPlayerReady}>
-                {isBuffering ? (
-                  <Loader2 size={24} className={styles.spinner} color="black" />
-                ) : isPlaying ? (
-                  <Pause size={28} fill="currentColor" />
-                ) : (
-                  <Play size={28} fill="currentColor" />
-                )}
-              </button>
-              
-              <button className={styles.btn} onClick={handleNext} disabled={results.length === 0 || !isPlayerReady}>
-                <SkipForward size={24} />
-              </button>
+              <div className={styles.controls}>
+                <button className={styles.btn} onClick={handlePrev} disabled={results.length === 0 || !isPlayerReady}>
+                  <SkipBack size={28} />
+                </button>
+                
+                <button className={styles.playBtn} onClick={togglePlay} disabled={results.length === 0 || !isPlayerReady}>
+                  {isBuffering ? (
+                    <Loader2 size={28} className={styles.spinner} color="black" />
+                  ) : isPlaying ? (
+                    <Pause size={32} fill="currentColor" />
+                  ) : (
+                    <Play size={32} fill="currentColor" />
+                  )}
+                </button>
+                
+                <button className={styles.btn} onClick={handleNext} disabled={results.length === 0 || !isPlayerReady}>
+                  <SkipForward size={28} />
+                </button>
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
     </AppContainer>
