@@ -17,22 +17,22 @@ export const QUEST_HINTS = [
     phase: 0,
     hints: [
       { id: "p0_h1", sender: "Mom", text: "Stop eating those oily chips! You're leaving grease marks everywhere.", delay: 5 },
-      { id: "p0_h2", sender: "Dad", text: "Try the flashlight if you're stuck on the pattern.", delay: 45 }
+      { id: "p0_h2", sender: "Dad", text: "Try the flashlight if you're stuck on the pattern.", delay: 60 }
     ]
   },
   {
     phase: 1,
     hints: [
-      { id: "p1_h1", sender: "Alex", text: "Are you in yet? Get on the Wi-Fi.", delay: 15 },
-      { id: "p1_h2", sender: "Alex", text: "Password is probably still the dog's name and birth year.", delay: 40 }
+      { id: "p1_h1", sender: "Alex", text: "Are you in yet? Get on the Wi-Fi.", delay: 10 },
+      { id: "p1_h2", sender: "Alex", text: "Password is probably still the dog's name and birth year.", delay: 60 }
     ]
   },
   {
     phase: 2,
     hints: [
       { id: "p2_h0", sender: "System", text: "A new app has been installed.", delay: 5 },
-      { id: "p2_h1", sender: "Alex", text: "BadgeGenerator can be used to generate the badge.", delay: 10 },
-      { id: "p2_h2", sender: "Alex", text: "Careful with permissions. Don't grant access unless it actually needs it.", delay: 40 }
+      { id: "p2_h1", sender: "Alex", text: "BadgeGenerator can be used to generate the badge.", delay: 30 },
+      { id: "p2_h2", sender: "Alex", text: "Careful with permissions. Don't grant access unless it actually needs it.", delay: 69 }
     ]
   }
 ];

@@ -13,13 +13,15 @@ import {
   Square,
   Volume2,
   Vibrate,
+  Power,
+  RefreshCw,
 } from "lucide-react";
 import { useOS, NavStyle } from "@/context/OSContext";
 import { QUEST_CONFIG } from "@/config/quest";
 import { SensoryEngine } from "@/utils/sensory";
 
 export default function SettingsApp() {
-  const { gamePhase, setGamePhase, navStyle, setNavStyle, isFullscreenEnforced, setIsFullscreenEnforced } = useOS();
+  const { gamePhase, setGamePhase, navStyle, setNavStyle, isFullscreenEnforced, setIsFullscreenEnforced, rebootDevice } = useOS();
   const [view, setView] = useState<"main" | "wifi" | "about">("main");
   const [wifiPassword, setWifiPassword] = useState("");
   const [promptNetwork, setPromptNetwork] = useState<string | null>(null);
@@ -441,6 +443,27 @@ export default function SettingsApp() {
                   {QUEST_CONFIG.about.easterEgg}
                 </div>
               )}
+              
+              <h2 className={styles.sectionTitle} style={{ marginTop: 24 }}>SYSTEM POWER</h2>
+              <div
+                className={styles.listItem}
+                onClick={() => rebootDevice(false)}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: 12, color: "#0a84ff" }}>
+                  <RefreshCw size={18} />
+                  <span style={{ fontWeight: 500 }}>Restart OS</span>
+                </div>
+              </div>
+
+              <div
+                className={styles.listItem}
+                onClick={() => rebootDevice(true)}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: 12, color: "#ff3b30" }}>
+                  <Power size={18} />
+                  <span style={{ fontWeight: 500 }}>Factory Reset</span>
+                </div>
+              </div>
             </div>
           )}
         </div>

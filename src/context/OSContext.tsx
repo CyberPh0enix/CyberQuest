@@ -41,6 +41,9 @@ interface OSContextType {
   isFullscreenEnforced: boolean;
   setIsFullscreenEnforced: (val: boolean) => void;
   wipeSystem: () => void;
+  isBooting: boolean;
+  rebootDevice: (hardWipe?: boolean) => void;
+  bootKey: number;
 }
 
 const OSContext = createContext<OSContextType | null>(null);
@@ -59,6 +62,14 @@ export function OSProvider({ children }: { children: ReactNode }) {
   const [isClosing, setIsClosing] = useState(false);
   const [navStyleInternal, setNavStyleInternal] = useState<NavStyle>("gesture");
   const [isFullscreenEnforced, setIsFullscreenEnforcedInternal] = useState(true);
+  const [isBooting, setIsBooting] = useState(true);
+  const [bootKey, setBootKey] = useState(0);
+
+  useEffect(() => {
+    // Initial startup sequence
+    const t = setTimeout(() => setIsBooting(false), 2000);
+    return () => clearTimeout(t);
+  }, []);
 
   useEffect(() => {
     try {
@@ -165,6 +176,24 @@ export function OSProvider({ children }: { children: ReactNode }) {
     } catch(e) {}
   };
 
+  const rebootDevice = (hardWipe = true) => {
+    setIsBooting(true);
+    // Allow splash screen to fade in
+    setTimeout(() => {
+      if (hardWipe) {
+        wipeSystem();
+      } else {
+        setActiveAppInternal(null);
+      }
+      setBootKey(k => k + 1);
+      
+      // Let it boot for 2.5 seconds
+      setTimeout(() => {
+        setIsBooting(false);
+      }, 2500);
+    }, 600);
+  };
+
   return (
     <OSContext.Provider value={{ 
       systemState, setSystemState, 
@@ -179,7 +208,7 @@ export function OSProvider({ children }: { children: ReactNode }) {
       isClosing, closeApp,
       navStyle: navStyleInternal, setNavStyle,
       isFullscreenEnforced, setIsFullscreenEnforced,
-      wipeSystem
+      wipeSystem, isBooting, rebootDevice, bootKey
     }}>
       {children}
     </OSContext.Provider>
