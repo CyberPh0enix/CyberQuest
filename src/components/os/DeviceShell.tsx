@@ -67,21 +67,31 @@ function ScreenContent() {
 
   // Enforce immersive fullscreen mode on mobile browsers
   useEffect(() => {
+    let isRequesting = false;
     const enforceFullscreen = async () => {
-      if (isFullscreenEnforced && document.documentElement.requestFullscreen && !document.fullscreenElement) {
+      if (isFullscreenEnforced && document.documentElement.requestFullscreen && !document.fullscreenElement && !isRequesting) {
+        isRequesting = true;
         try {
           await document.documentElement.requestFullscreen();
         } catch (e) {
           // Silent catch for browsers that block it
+        } finally {
+          isRequesting = false;
         }
       }
     };
     
     if (isFullscreenEnforced) {
+      document.addEventListener('click', enforceFullscreen);
+      document.addEventListener('touchend', enforceFullscreen);
       document.addEventListener('pointerdown', enforceFullscreen);
     }
     
-    return () => document.removeEventListener('pointerdown', enforceFullscreen);
+    return () => {
+      document.removeEventListener('click', enforceFullscreen);
+      document.removeEventListener('touchend', enforceFullscreen);
+      document.removeEventListener('pointerdown', enforceFullscreen);
+    };
   }, [isFullscreenEnforced]);
 
   useEffect(() => {
