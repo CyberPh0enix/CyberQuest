@@ -58,12 +58,11 @@ import GlobalOverlays from "./GlobalOverlays";
 import { useEffect } from "react";
 
 function ScreenContent() {
-  const { navStyle, systemState, setSystemState, setGamePhase, setActiveApp } = useOS();
+  const { navStyle, systemState, setSystemState, setGamePhase, setActiveApp, wipeSystem } = useOS();
 
   const handleReboot = () => {
-    setActiveApp(null);
-    setGamePhase(0);
-    setSystemState("locked");
+    wipeSystem();
+    window.location.reload();
   };
 
   useEffect(() => {

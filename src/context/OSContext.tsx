@@ -38,6 +38,7 @@ interface OSContextType {
   closeApp: () => void;
   navStyle: NavStyle;
   setNavStyle: (style: NavStyle) => void;
+  wipeSystem: () => void;
 }
 
 const OSContext = createContext<OSContextType | null>(null);
@@ -128,6 +129,25 @@ export function OSProvider({ children }: { children: ReactNode }) {
     try { localStorage.setItem("cq_nav_style", style); } catch (e) {}
   };
 
+  const wipeSystem = () => {
+    setActiveAppInternal(null);
+    setGamePhaseInternal(0);
+    setSystemStateInternal("locked");
+    setNotifications([]);
+    try {
+      localStorage.removeItem("cq_active_app");
+      localStorage.setItem("cq_game_phase", "0");
+      localStorage.setItem("cq_sys_state", "locked");
+      localStorage.removeItem("cq_notifications");
+      localStorage.removeItem("cq_hints_processed");
+      localStorage.removeItem("cq_phase_0_start");
+      localStorage.removeItem("cq_phase_1_start");
+      localStorage.removeItem("cq_phase_2_start");
+      localStorage.removeItem("cq_phase_3_start");
+      localStorage.removeItem("cq_phase_4_start");
+    } catch(e) {}
+  };
+
   return (
     <OSContext.Provider value={{ 
       systemState, setSystemState, 
@@ -140,7 +160,8 @@ export function OSProvider({ children }: { children: ReactNode }) {
       showNotifications, setShowNotifications,
       appOrigin, setAppOrigin,
       isClosing, closeApp,
-      navStyle: navStyleInternal, setNavStyle
+      navStyle: navStyleInternal, setNavStyle,
+      wipeSystem
     }}>
       {children}
     </OSContext.Provider>
