@@ -12,7 +12,15 @@ type Track = {
   artist: string;
   albumArt: string;
   url: string;
+  sourceType: string;
 };
+
+declare global {
+  interface Window {
+    YT: any;
+    onYouTubeIframeAPIReady: () => void;
+  }
+}
 
 export default function MusicApp() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -24,31 +32,40 @@ export default function MusicApp() {
   const [progress, setProgress] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
+  const [isBuffering, setIsBuffering] = useState(false);
   
-  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const [isApiReady, setIsApiReady] = useState(false);
+  const [isPlayerReady, setIsPlayerReady] = useState(false); // Strict lock
+  const playerRef = useRef<any>(null);
+  const playerContainerRef = useRef<HTMLDivElement>(null);
+  const syncInterval = useRef<NodeJS.Timeout | null>(null);
 
-  // Universal Extraction Engine Foundation
+  useEffect(() => {
+    if (!window.YT) {
+      const tag = document.createElement('script');
+      tag.src = "https://www.youtube.com/iframe_api";
+      const firstScriptTag = document.getElementsByTagName('script')[0];
+      firstScriptTag.parentNode?.insertBefore(tag, firstScriptTag);
+      window.onYouTubeIframeAPIReady = () => setIsApiReady(true);
+    } else {
+      setIsApiReady(true);
+    }
+    return () => { if (syncInterval.current) clearInterval(syncInterval.current); };
+  }, []);
+
   const handleSearch = async () => {
     if (!searchQuery.trim()) return;
     SensoryEngine.playTap();
     setIsSearching(true);
     
     try {
-      // FOUNDATION: Using iTunes API because it is free, incredibly fast, and CORS universally enabled.
-      // This serves as the perfect foundational proxy to prove dynamic extraction and HTML5 Audio playback.
-      // In the next phase, we will map this exact data structure to a YTM/Spotify Next.js endpoint.
-      const response = await fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(searchQuery)}&media=music&limit=25`);
+      // Using our custom Next.js API Edge Route to natively scrape YouTube
+      const response = await fetch(`/api/music/search?q=${encodeURIComponent(searchQuery)}`);
       const data = await response.json();
       
-      const tracks: Track[] = data.results.map((item: any) => ({
-        id: item.trackId.toString(),
-        title: item.trackName,
-        artist: item.artistName,
-        albumArt: item.artworkUrl100,
-        url: item.previewUrl // High-quality 30s preview audio
-      }));
-      
-      setResults(tracks);
+      if (data.results) {
+        setResults(data.results);
+      }
     } catch (e) {
       console.error("Extraction failed:", e);
     } finally {
@@ -56,59 +73,98 @@ export default function MusicApp() {
     }
   };
 
-  // Pure HTML5 Playback Engine
   useEffect(() => {
-    if (currentTrackIndex === -1 || results.length === 0) return;
-    const currentTrack = results[currentTrackIndex];
+    if (!isApiReady || !playerContainerRef.current) return;
 
-    if (!audioRef.current) {
-      audioRef.current = new Audio(currentTrack.url);
-    } else {
-      audioRef.current.src = currentTrack.url;
-    }
-
-    const audio = audioRef.current;
-    
-    const onTimeUpdate = () => {
-      setCurrentTime(audio.currentTime);
-      setProgress((audio.currentTime / audio.duration) * 100 || 0);
-    };
-    
-    const onLoadedMetadata = () => setDuration(audio.duration);
-    const onEnded = () => handleNext();
-
-    audio.addEventListener("timeupdate", onTimeUpdate);
-    audio.addEventListener("loadedmetadata", onLoadedMetadata);
-    audio.addEventListener("ended", onEnded);
-
-    if (isPlaying) {
-      audio.play().catch(e => {
-        console.error("Playback engine error:", e);
-        setIsPlaying(false);
+    if (!playerRef.current) {
+      playerRef.current = new window.YT.Player(playerContainerRef.current, {
+        height: '200', 
+        width: '200',
+        playerVars: { autoplay: 0, controls: 0, disablekb: 1, fs: 0, rel: 0, playsinline: 1 },
+        events: {
+          onReady: () => {
+            setIsPlayerReady(true);
+            // We do not load track here, the useEffect below will catch it now that isPlayerReady is true
+          },
+          onStateChange: (e: any) => {
+            if (e.data === 1) { // Playing
+              setIsPlaying(true);
+              setIsBuffering(false);
+              setDuration(e.target.getDuration());
+              startSync();
+            } else if (e.data === 2) { // Paused
+              setIsPlaying(false);
+              setIsBuffering(false);
+              stopSync();
+            } else if (e.data === 3) { // Buffering
+              setIsBuffering(true);
+            } else if (e.data === 0) { // Ended
+              handleNext();
+            }
+          },
+          onError: (e: any) => {
+            console.error("YT Error:", e.data);
+            handleNext(); // Skip broken tracks automatically
+          }
+        }
       });
-    } else {
-      audio.pause();
     }
 
     return () => {
-      audio.removeEventListener("timeupdate", onTimeUpdate);
-      audio.removeEventListener("loadedmetadata", onLoadedMetadata);
-      audio.removeEventListener("ended", onEnded);
+      // FIX: Robust cleanup ensures ghost audio perfectly stops when app is closed
+      if (playerRef.current && playerRef.current.pauseVideo) {
+        try {
+          playerRef.current.pauseVideo();
+        } catch(e){}
+      }
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentTrackIndex, results, isPlaying]);
+  }, [isApiReady]);
+
+  useEffect(() => {
+    if (currentTrackIndex === -1 || results.length === 0 || !isPlayerReady || !playerRef.current) return;
+    loadTrack(results[currentTrackIndex]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentTrackIndex, results, isPlayerReady]);
+
+  const loadTrack = (track: Track) => {
+    setProgress(0);
+    setCurrentTime(0);
+    setIsBuffering(true);
+    playerRef.current.loadVideoById({ videoId: track.url });
+  };
+
+  const startSync = () => {
+    if (syncInterval.current) clearInterval(syncInterval.current);
+    syncInterval.current = setInterval(() => {
+      if (playerRef.current && playerRef.current.getCurrentTime) {
+        const time = playerRef.current.getCurrentTime();
+        const dur = playerRef.current.getDuration();
+        setCurrentTime(time);
+        setDuration(dur);
+        setProgress((time / dur) * 100);
+      }
+    }, 500);
+  };
+
+  const stopSync = () => {
+    if (syncInterval.current) clearInterval(syncInterval.current);
+  };
 
   const togglePlay = () => {
     SensoryEngine.playTap();
-    if (currentTrackIndex === -1) return;
-    setIsPlaying(!isPlaying);
+    if (!playerRef.current || !playerRef.current.playVideo || currentTrackIndex === -1) return;
+    
+    if (isPlaying) {
+      playerRef.current.pauseVideo();
+    } else {
+      playerRef.current.playVideo();
+    }
   };
 
   const playTrack = (index: number) => {
     SensoryEngine.playTap();
     setCurrentTrackIndex(index);
-    setProgress(0);
-    setCurrentTime(0);
     setIsPlaying(true);
   };
 
@@ -127,12 +183,12 @@ export default function MusicApp() {
   };
 
   const handleScrub = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (currentTrackIndex === -1 || duration === 0 || !audioRef.current) return;
+    if (currentTrackIndex === -1 || duration === 0 || !playerRef.current?.seekTo) return;
     const rect = e.currentTarget.getBoundingClientRect();
     const percent = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
     
     const targetTime = percent * duration;
-    audioRef.current.currentTime = targetTime;
+    playerRef.current.seekTo(targetTime, true);
     setCurrentTime(targetTime);
     setProgress(percent * 100);
   };
@@ -144,19 +200,21 @@ export default function MusicApp() {
     return `${m}:${s.toString().padStart(2, '0')}`;
   };
 
-  const activeTrack = currentTrackIndex >= 0 ? results[currentTrackIndex] : null;
-
   return (
     <AppContainer appId="music" appName="Music">
       <div className={styles.container}>
         
-        {/* Universal Search Header */}
+        {/* Hidden YouTube Player allocated correctly to bypass invisible zero-pixel crashing */}
+        <div style={{ position: 'absolute', top: -9999, left: -9999, width: 200, height: 200, opacity: 0, pointerEvents: 'none' }}>
+          <div ref={playerContainerRef}></div>
+        </div>
+
         <div className={styles.searchHeader}>
           <Search size={20} color="rgba(255,255,255,0.5)" />
           <input 
             type="text" 
             className={styles.searchInput}
-            placeholder="Search tracks, artists, albums..."
+            placeholder="Search YouTube..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
@@ -164,13 +222,12 @@ export default function MusicApp() {
           {isSearching && <Loader2 size={20} className={styles.spinner} color="rgba(255,255,255,0.5)" />}
         </div>
 
-        {/* Dynamic Results Engine */}
         <div className={styles.content}>
           <div className={styles.trackList}>
             {results.length === 0 && !isSearching ? (
               <div className={styles.emptyState}>
                 <Music size={48} />
-                <p>Search the global catalog to begin playback.</p>
+                <p>Search YouTube to instantly stream full tracks.</p>
               </div>
             ) : (
               results.map((track, idx) => (
@@ -189,7 +246,6 @@ export default function MusicApp() {
             )}
           </div>
 
-          {/* Persistent Playback Controller */}
           <div className={styles.playbackEngine}>
             <div className={styles.progressWrapper}>
               <span>{formatTime(currentTime)}</span>
@@ -200,21 +256,25 @@ export default function MusicApp() {
             </div>
             
             <div className={styles.controls}>
-              <button className={styles.btn} onClick={handlePrev} disabled={results.length === 0}>
+              <button className={styles.btn} onClick={handlePrev} disabled={results.length === 0 || !isPlayerReady}>
                 <SkipBack size={24} />
               </button>
               
-              {/* Perfectly aligned Play button using generic flexbox context */}
-              <button className={styles.playBtn} onClick={togglePlay} disabled={results.length === 0}>
-                {isPlaying ? <Pause size={28} fill="currentColor" /> : <Play size={28} fill="currentColor" />}
+              <button className={styles.playBtn} onClick={togglePlay} disabled={results.length === 0 || !isPlayerReady}>
+                {isBuffering ? (
+                  <Loader2 size={24} className={styles.spinner} color="black" />
+                ) : isPlaying ? (
+                  <Pause size={28} fill="currentColor" />
+                ) : (
+                  <Play size={28} fill="currentColor" />
+                )}
               </button>
               
-              <button className={styles.btn} onClick={handleNext} disabled={results.length === 0}>
+              <button className={styles.btn} onClick={handleNext} disabled={results.length === 0 || !isPlayerReady}>
                 <SkipForward size={24} />
               </button>
             </div>
           </div>
-
         </div>
       </div>
     </AppContainer>
