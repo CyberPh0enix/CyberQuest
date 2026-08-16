@@ -5,9 +5,10 @@ import styles from "./LockScreen.module.css";
 import { 
   Flashlight, LockKeyhole, Wifi, Bluetooth, 
   Plane, Signal, Sun, Volume2, 
-  Camera, Calculator, Cast
+  Camera, Calculator, Cast, Music, Play, Pause, SkipBack, SkipForward, Loader2
 } from "lucide-react";
 import { useOS } from "@/context/OSContext";
+import { useMusic } from "@/context/MusicContext";
 
 export default function GlobalOverlays() {
   const { 
@@ -15,8 +16,14 @@ export default function GlobalOverlays() {
     showControlCenter, setShowControlCenter, 
     showNotifications, setShowNotifications,
     notifications, markNotificationsRead,
-    setSystemState, gamePhase
+    setSystemState, gamePhase, setActiveApp
   } = useOS();
+
+  const { 
+    results, currentTrackIndex, isPlaying, isBuffering, isPlayerReady,
+    togglePlay, handleNext, handlePrev 
+  } = useMusic();
+  const activeTrack = currentTrackIndex !== -1 ? results[currentTrackIndex] : null;
 
   // Group notifications by sender
   const groupedNotifs = notifications.reduce((acc, n) => {
@@ -188,6 +195,40 @@ export default function GlobalOverlays() {
             className={`${styles.ccButton} ${toggles.cast ? styles.ccButtonActive : ""}`}
             onClick={(e) => { e.stopPropagation(); setToggles({...toggles, cast: !toggles.cast}); }}
           ><Cast size={24} /></div>
+        </div>
+
+        {/* --- Music Control Widget --- */}
+        <div className={styles.ccMusicWidget}>
+          {activeTrack ? (
+            <div className={styles.ccMusicRow} onClick={() => { setShowControlCenter(false); setActiveApp("music"); }}>
+              <img src={activeTrack.albumArt} alt="" className={styles.ccMusicArt} />
+              <div className={styles.ccMusicInfo}>
+                <span className={styles.ccMusicTitle}>{activeTrack.title}</span>
+                <span className={styles.ccMusicArtist}>{activeTrack.artist}</span>
+              </div>
+              <div className={styles.ccMusicControls}>
+                <button 
+                  className={styles.ccMusicBtn} 
+                  onClick={(e) => { e.stopPropagation(); togglePlay(); }}
+                  disabled={!isPlayerReady}
+                >
+                  {isBuffering ? <Loader2 size={24} className={styles.spinner} /> : isPlaying ? <Pause size={24} fill="currentColor" /> : <Play size={24} fill="currentColor" />}
+                </button>
+                <button 
+                  className={styles.ccMusicBtn} 
+                  onClick={(e) => { e.stopPropagation(); handleNext(); }}
+                  disabled={!isPlayerReady}
+                >
+                  <SkipForward size={24} />
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className={styles.ccMusicEmpty} onClick={() => { setShowControlCenter(false); setActiveApp("music"); }}>
+              <Music size={20} />
+              <span>Not Playing</span>
+            </div>
+          )}
         </div>
         
         <div className={styles.ccFlexRow} style={{ marginTop: "16px" }}>

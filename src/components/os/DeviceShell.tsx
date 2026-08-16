@@ -2,6 +2,7 @@
 
 import { ReactNode } from "react";
 import { OSProvider, useOS } from "@/context/OSContext";
+import { MusicProvider } from "@/context/MusicContext";
 import StatusBar from "@/components/ui/StatusBar";
 import HomeIndicator from "@/components/ui/HomeIndicator";
 import NavigationBar from "@/components/ui/NavigationBar";
@@ -156,14 +157,16 @@ interface DeviceShellProps {
 export default function DeviceShell({ children }: DeviceShellProps) {
   return (
     <OSProvider>
-      <GameDirector />
-      <div className={styles.workspace}>
-        <div className={styles.deviceFrame}>
-          <div className={styles.screen} data-screen="true">
-            <ScreenContent />
+      <MusicProvider>
+        <GameDirector />
+        <div className={styles.workspace}>
+          <div className={styles.deviceFrame}>
+            <div className={styles.screen} data-screen="true">
+              <ScreenContent />
+            </div>
           </div>
         </div>
-      </div>
+      </MusicProvider>
     </OSProvider>
   );
 }
