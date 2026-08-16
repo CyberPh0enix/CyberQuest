@@ -14,12 +14,10 @@
   display: flex;
   flex-direction: column;
   padding-top: 50px; /* Space for status bar */
-  transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1), filter 0.4s ease;
-  transform-origin: center center;
+  transition: filter 0.4s ease;
 }
 
 .desktopWrapper.appOpen {
-  transform: scale(0.93);
   filter: brightness(0.4);
 }
 
@@ -30,6 +28,12 @@
   padding: 20px;
   flex: 1;
   align-content: flex-start;
+  transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1);
+  transform-origin: center center;
+}
+
+.desktopWrapper.appOpen .appGrid {
+  transform: scale(0.93);
 }
 
 @media (min-width: 768px) {
@@ -88,6 +92,12 @@
   display: flex;
   justify-content: space-around;
   box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1);
+  transform-origin: bottom center;
+}
+
+.desktopWrapper.appOpen .dock {
+  transform: scale(0.93) translateY(10px);
 }
 
 @media (min-width: 768px) {
